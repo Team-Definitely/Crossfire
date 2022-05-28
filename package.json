@@ -3,7 +3,8 @@
   "dependencies": {
     "axios": "^0.27.2",
     "qs": "^6.10.3",
-    "web3": "1.7.3"
+    "web3": "1.7.3",
+    "yarn": "^1.22.18"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.6",
