@@ -4,7 +4,7 @@ import axios from '~/utils/axios';
 import Dropdown from '../components/Dropdown.vue';
 import InputField from '../components/InputField.vue';
 import { Chain } from '~/interfaces'
-import { quote } from '../utils/requests'
+import { getBuildTx, postBuildTx, quote } from '../utils/requests'
 import { useWeb3Store } from '~/stores/web3Store';
 import { storeToRefs } from 'pinia';
 import { formatUnits } from '@ethersproject/units';
@@ -25,9 +25,12 @@ const tokenList1 = ref(null)
 const inputAmount = ref(null as number | null)
 const outputAmount = ref(null as number | null)
 
+const quoteResult = ref(null)
+
 const defaultPlaceholder = "0.0"
 const placeholder = ref(defaultPlaceholder)
 
+const transferLoading = ref(false)
 
 onMounted(init)
 
@@ -66,22 +69,35 @@ async function getSupportedChains() {
 async function getSupportedTokens() {
     if (!selectedChain0.value || !selectedChain1.value) return
 
-    const tokens = await axios.get('/token-lists/from-token-list', {
+    const fromTokens = await axios.get('/token-lists/from-token-list', {
         params: {
             fromChainId: selectedChain0.value.chainId,
             toChainId: selectedChain1.value.chainId,
             isShortList: true,
+            singleTxOnly: true,
         }
     })
-    console.log("Tokens", tokens.data.result)
-    tokenList0.value = tokens.data.result
-    tokenList1.value = tokens.data.result
+
+    const toTokens = await axios.get('/token-lists/to-token-list', {
+        params: {
+            fromChainId: selectedChain0.value.chainId,
+            toChainId: selectedChain1.value.chainId,
+            isShortList: true,
+            singleTxOnly: true,
+        }
+    })
+    // console.log("Tokens", tokens.data.result)
+    tokenList0.value = fromTokens.data.result
+    tokenList1.value = toTokens.data.result
 }
 
 async function getQuote() {
     try {
         placeholder.value = "Loading..."
+
+        quoteResult.value = null
         outputAmount.value = null
+
         if (!selectedChain0.value || !selectedChain1.value || !selectedToken0.value || !selectedToken1.value || !inputAmount.value) return
         const result = await quote({
             fromChainId: selectedChain0.value.chainId,
@@ -98,6 +114,8 @@ async function getQuote() {
             const toAmount = result.result.routes[result.result.routes.length - 1].toAmount
             console.log("quote result", toAmount)
             outputAmount.value = +formatUnits(toAmount, (selectedToken1.value as any).decimals)
+
+            quoteResult.value = { route: result.result.routes[result.result.routes.length - 1] } as any
         }
         else {
             outputAmount.value = 0
@@ -111,8 +129,29 @@ async function getQuote() {
     }
 }
 
-function transfer() {
-
+async function transfer() {
+    if (!quoteResult.value) return
+    try {
+        transferLoading.value = true
+        // const result = await getBuildTx({
+        //     sender: ,
+        //     recipient: ,
+        //     fromChainId: selectedChain0.value.chainId,
+        //     toChainId: selectedChain1.value.chainId,
+        //     fromTokenAddress: (selectedToken0.value as any).address,
+        //     toTokenAddress: (selectedToken1.value as any).address,
+        //     fromAmount: inputAmount.value * 10 ** (selectedToken0.value as any).decimals,
+        //     toAmount: outputAmount.value * 10 ** (selectedToken1.value as any).decimals,
+        // })
+        const result = await postBuildTx(quoteResult.value)
+        console.log("result of post build tx", result)
+    }
+    catch (e) {
+        console.error(e);
+    }
+    finally {
+        transferLoading.value = false
+    }
 }
 
 </script>
