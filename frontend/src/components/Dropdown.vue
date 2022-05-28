@@ -80,7 +80,7 @@ function select(item: any) {
             <ul class="list-none max-h-64 overflow-y-auto">
                 <li v-for="item in items" @click="select(item)"
                     class="flex space-x-2 items-center px-4 py-3 cursor-pointer hover:(bg-true-gray-600) rounded-lg">
-                    <SafeImage :src="selected.icon ?? getIconUrl(item.name, props.type)" :alt="item.name"
+                    <SafeImage :src="item.icon ?? getIconUrl(item.name, props.type)" :alt="item.name"
                         class="w-6 h-6 mt-0.5 rounded-full" />
                     <span>
                         {{ item.name }}
