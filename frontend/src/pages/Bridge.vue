@@ -7,6 +7,7 @@ import { Chain } from '~/interfaces'
 import { quote } from '../utils/requests'
 import { useWeb3Store } from '~/stores/web3Store';
 import { storeToRefs } from 'pinia';
+import { formatUnits } from '@ethersproject/units';
 
 const { address } = storeToRefs(useWeb3Store())
 
@@ -96,7 +97,7 @@ async function getQuote() {
         if (result.result.routes?.length > 0) {
             const toAmount = result.result.routes[result.result.routes.length - 1].toAmount
             console.log("quote result", toAmount)
-            outputAmount.value = toAmount
+            outputAmount.value = +formatUnits(toAmount, (selectedToken1.value as any).decimals)
         }
         else {
             outputAmount.value = 0
