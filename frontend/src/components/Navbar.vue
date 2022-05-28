@@ -39,7 +39,7 @@ async function connectWallet() {
     <nav class="flex justify-between items-center p-5 bg-dark-300 m-2 rounded-lg">
         <h1>Crossfire</h1>
         <ul class="list-none flex space-x-2 items-center">
-            <li>
+            <li class="z-0">
                 <ConnectWalletButton @click="connectWallet" :address="address ?? ''" :dark="true" />
             </li>
         </ul>
