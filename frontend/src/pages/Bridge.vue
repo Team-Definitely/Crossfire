@@ -5,6 +5,10 @@ import Dropdown from '../components/Dropdown.vue';
 import InputField from '../components/InputField.vue';
 import { Chain } from '~/interfaces'
 import { quote } from '../utils/requests'
+import { useWeb3Store } from '~/stores/web3Store';
+import { storeToRefs } from 'pinia';
+
+const { address } = storeToRefs(useWeb3Store())
 
 const selectedChain0 = ref(null as Chain | null)
 const selectedChain1 = ref(null as Chain | null)
@@ -17,6 +21,8 @@ const chainList1 = ref(null)
 const tokenList0 = ref(null)
 const tokenList1 = ref(null)
 
+const inputAmount = ref(null as number | null)
+
 
 onMounted(init)
 
@@ -24,8 +30,14 @@ function init() {
     getSupportedChains()
 }
 
-watch(chainList0, () => getSupportedTokens())
-watch(chainList1, () => getSupportedTokens())
+watch(selectedChain0, onSelectedChainChange)
+watch(selectedChain1, onSelectedChainChange)
+
+function onSelectedChainChange() {
+    selectedToken0.value = null
+    selectedToken1.value = null
+    getSupportedTokens()
+}
 
 async function getSupportedChains() {
     const chains = await axios.get(`/supported/chains`);
@@ -37,8 +49,6 @@ async function getSupportedChains() {
 }
 
 async function getSupportedTokens() {
-    tokenList0.value = null
-    tokenList1.value = null
     if (!selectedChain0.value || !selectedChain1.value) return
 
     const tokens = await axios.get('/token-lists/from-token-list', {
@@ -48,9 +58,24 @@ async function getSupportedTokens() {
             isShortList: true,
         }
     })
+    console.log("Tokens", tokens.data.result)
     tokenList0.value = tokens.data.result
     tokenList1.value = tokens.data.result
+}
 
+async function getQuote() {
+    if (!selectedChain0.value || !selectedChain1.value || !selectedToken0.value || !selectedToken1.value || !inputAmount.value) return
+    const result = await quote({
+        fromChainId: selectedChain0.value.chainId,
+        toChainId: selectedChain1.value.chainId,
+        fromTokenAddress: (selectedToken0.value as any).address,
+        toTokenAddress: (selectedToken1.value as any).address,
+        fromAmount: inputAmount.value * 10 ** (selectedToken0.value as any).decimals,
+        userAddress: address.value,
+        uniqueRoutesPerBridge: true,
+        sort: "time", // can provide option to user
+    } as any)
+    console.log("quote result", result.result.routes[result.result.routes.length - 1].toAmount)
 }
 
 function transfer() {
@@ -76,9 +101,11 @@ function transfer() {
 
         </div>
         <div class="mt-5">
-            <InputField label="From token" v-model="selectedToken0" placeholder="0.0" :list="tokenList0" />
+            <InputField label="From token" v-model="selectedToken0" v-model:inputValue="inputAmount" placeholder="0.0"
+                :list="tokenList0" v-debounce:300ms="getQuote" />
             <div class="my-1.5 w-full text-center">&darr;</div>
-            <InputField label="To token" v-model="selectedToken1" placeholder="0.0" :list="tokenList1" disabled="true" />
+            <InputField label="To token" v-model="selectedToken1" placeholder="0.0" :list="tokenList1"
+                disabled="true" />
         </div>
 
         <div class="mt-5">

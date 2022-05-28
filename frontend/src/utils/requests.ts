@@ -1,10 +1,7 @@
 /* eslint-disable no-unused-vars */
-const axios = require("axios").default;
-const qs = require("qs");
+import axios from './axios'
+import qs from 'qs'
 
-axios.defaults.baseURL = "https://api.socket.tech/v2/";
-axios.defaults.headers.common["API-KEY"] =
-  "645b2c8c-5825-4930-baf3-d9b997fcd88c"; // public tha already, kal aana
 
 export function generateParams(name, array) {
   let result = "";
@@ -198,7 +195,7 @@ export async function quote(
   }
 ) {
   try {
-    const quote = await axios.get(`/token-lists/from-token-list`, {
+    const quote = await axios.get(`/quote`, {
       params: {
         fromChainId: data.fromChainId,
         fromTokenAddress: data.fromTokenAddress,

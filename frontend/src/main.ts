@@ -9,7 +9,11 @@ import 'vue-connect-wallet/dist/style.css'
 import VueUniversalModal from 'vue-universal-modal'
 import 'vue-universal-modal/dist/index.css'
 
+import { vue3Debounce } from 'vue-debounce'
+
 createApp(App).use(router).use(createPinia()).use(VueUniversalModal, {
     teleportTarget: "#modals",
     modalComponent: "Modal"
-}).mount('#app')
+})
+    .directive('debounce', vue3Debounce({ lock: true }))
+    .mount('#app')

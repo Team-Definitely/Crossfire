@@ -52,7 +52,6 @@ function init() {
 }
 
 function select(item: any) {
-    console.log("selected", selected.value)
     selected.value = item
     closeModal()
 }

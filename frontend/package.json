@@ -12,6 +12,7 @@
     "axios": "^0.27.2",
     "ethers": "^5.6.8",
     "pinia": "^2.0.14",
+    "qs": "^6.10.3",
     "vite-plugin-windicss": "^1.8.4",
     "vue": "^3.2.25",
     "vue-connect-wallet": "^0.1.5",
