@@ -34,12 +34,20 @@ function init() {
 watch(selectedChain0, onSelectedChainChange)
 watch(selectedChain1, onSelectedChainChange)
 
+watch(selectedToken0, onTokenChange)
+watch(selectedToken1, onTokenChange)
+
 function onSelectedChainChange() {
     selectedToken0.value = null
     selectedToken1.value = null
     inputAmount.value = null
     outputAmount.value = null
     getSupportedTokens()
+}
+
+function onTokenChange() {
+    inputAmount.value = null
+    outputAmount.value = null
 }
 
 async function getSupportedChains() {
@@ -67,6 +75,7 @@ async function getSupportedTokens() {
 }
 
 async function getQuote() {
+    outputAmount.value = null
     if (!selectedChain0.value || !selectedChain1.value || !selectedToken0.value || !selectedToken1.value || !inputAmount.value) return
     const result = await quote({
         fromChainId: selectedChain0.value.chainId,
@@ -78,7 +87,15 @@ async function getQuote() {
         uniqueRoutesPerBridge: true,
         sort: "time", // can provide option to user
     } as any)
-    console.log("quote result", result.result.routes[result.result.routes.length - 1].toAmount)
+    console.log(result.result)
+    if (result.result.routes?.length > 0) {
+        const toAmount = result.result.routes[result.result.routes.length - 1].toAmount
+        console.log("quote result", toAmount)
+        outputAmount.value = toAmount
+    }
+    else {
+        outputAmount.value = 0
+    }
 }
 
 function transfer() {
