@@ -76,7 +76,7 @@ function transfer() {
         </div>
         <div class="mt-5">
             <InputField label="From token" v-model="selectedToken0" placeholder="0.0" :list="tokenList0" />
-            <div class="mt-3"></div>
+            <div class="my-1.5 w-full text-center">&darr;</div>
             <InputField label="To token" v-model="selectedToken1" placeholder="0.0" :list="tokenList1" />
         </div>
 

@@ -6,6 +6,7 @@ import { tokens } from '~/constants/tokenList'
 import { getIconUrl } from '~/utils/icons'
 import { useVModel } from '@vueuse/core'
 import SafeImage from './SafeImage.vue';
+import Chevron from './Icons/Chevron.vue';
 
 const open = ref(false)
 const items = ref([] as any[])
@@ -70,12 +71,13 @@ function select(item: any) {
             <span>
                 {{ selected.name }}
             </span>
+            <Chevron class="w-4 h-4" />
         </span>
     </button>
     <Modal v-model="open" :close="closeModal">
         <div class="bg-true-gray-700 text-white rounded-lg w-10/12 md:w-1/5">
             <div class="p-5 bg-true-gray-800 rounded-t-lg">
-                Select a {{ props.type }}
+                Select a {{ props.type }} 
             </div>
             <ul class="list-none max-h-64 overflow-y-auto">
                 <li v-for="item in items" @click="select(item)"
