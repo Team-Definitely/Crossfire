@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import { onMounted, Ref, ref, defineEmits } from 'vue';
 import { chains } from '~/constants/chainList'
-import { token, tokens } from '~/constants/tokenList'
+import { tokens } from '~/constants/tokenList'
 import { getIconUrl } from '~/utils/icons'
 import { useVModel } from '@vueuse/core'
 
@@ -16,7 +16,10 @@ const props = defineProps({
     },
     modelValue: {
         required: false,
-    }
+    },
+    list: {
+        required: false,
+    },
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -33,7 +36,9 @@ function closeModal() {
 
 function init() {
     if (props.type === 'Chain') items.value = chains
-    else if (props.type === 'Token') items.value = tokens
+    else if (props.type === 'Token') {
+        items.value = props.list as any[] ?? tokens
+    }
 }
 
 function select(item: any) {

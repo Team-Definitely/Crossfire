@@ -10,6 +10,9 @@ const props = defineProps({
     },
     modelValue: {
         required: false,
+    },
+    list: {
+        required: false,
     }
 })
 
@@ -27,7 +30,7 @@ const selected: Ref<any> = useVModel(props, 'modelValue', emit)
                 {{ props.label }}
             </div>
             <div class="absolute right-0 top-1/4">
-                <Dropdown v-model="selected" type="Token">
+                <Dropdown v-model="selected" type="Token" :list="list">
                     Select a token
                 </Dropdown>
             </div>

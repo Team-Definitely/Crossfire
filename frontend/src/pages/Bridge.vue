@@ -9,6 +9,12 @@ const selectedChain1 = ref(null)
 const selectedToken0 = ref(null)
 const selectedToken1 = ref(null)
 
+const tokenList0 = [{ name: 'DAI', symbol: 'DAI' }]
+
+function transfer() {
+
+}
+
 </script>
 
 <template>
@@ -16,20 +22,26 @@ const selectedToken1 = ref(null)
         <h1 class="font-bold text-xl">Bridge</h1>
         <h3 class="text-sm text-gray-300">Transfer tokens between varying chains</h3>
 
-        <div class="flex items-center justify-between mt-3">
+        <div class="flex flex-col md:flex-row md:items-center justify-between mt-3">
             <Dropdown v-model="selectedChain0">
                 From Chain
             </Dropdown>
-            <span>&rarr;</span>
+            <span class="hidden md:block">&rarr;</span>
+            <span class="block md:hidden my-2 mx-auto">&darr;</span>
             <Dropdown v-model="selectedChain1">
                 To Chain
             </Dropdown>
 
         </div>
         <div class="mt-5">
-            <InputField label="First token" v-model="selectedToken0" placeholder="0.0" />
+            <InputField label="First token" v-model="selectedToken0" placeholder="0.0" :list="tokenList0" />
             <div class="mt-3"></div>
             <InputField label="Second token" v-model="selectedToken1" placeholder="0.0" />
+        </div>
+
+        <div class="mt-5">
+            <button @click="transfer"
+                class="w-full bg-teal-500 hover:bg-teal-600 transition rounded-lg p-3 font-bold">Transfer</button>
         </div>
     </div>
 </template>
