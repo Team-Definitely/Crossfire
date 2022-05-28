@@ -22,6 +22,7 @@ const tokenList0 = ref(null)
 const tokenList1 = ref(null)
 
 const inputAmount = ref(null as number | null)
+const outputAmount = ref(null as number | null)
 
 
 onMounted(init)
@@ -36,6 +37,8 @@ watch(selectedChain1, onSelectedChainChange)
 function onSelectedChainChange() {
     selectedToken0.value = null
     selectedToken1.value = null
+    inputAmount.value = null
+    outputAmount.value = null
     getSupportedTokens()
 }
 
@@ -104,8 +107,8 @@ function transfer() {
             <InputField label="From token" v-model="selectedToken0" v-model:inputValue="inputAmount" placeholder="0.0"
                 :list="tokenList0" v-debounce:300ms="getQuote" />
             <div class="my-1.5 w-full text-center">&darr;</div>
-            <InputField label="To token" v-model="selectedToken1" placeholder="0.0" :list="tokenList1"
-                disabled="true" />
+            <InputField label="To token" v-model="selectedToken1" v-model:inputValue="inputAmount" placeholder="0.0"
+                :list="tokenList1" disabled="true" />
         </div>
 
         <div class="mt-5">
