@@ -86,8 +86,8 @@ function select(item: any) {
                         <circle cx="11" cy="11" r="8"></circle>
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
-                    <input id="search_address" placeholder="Search Name or Address"
-                        class="w-full border-none py-2.5 bg-transparent" role="search" spellcheck="false" value="">
+                    <input placeholder="Search Name or Address" class="w-full border-none py-2.5 bg-transparent"
+                        role="search" spellcheck="false" value="">
                 </div>
                 <div class="flex flex-wrap gap-x-2 gap-y-2 mb-4">
                     <div
