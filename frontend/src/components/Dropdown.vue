@@ -64,7 +64,8 @@ function select(item: any) {
             <slot />
         </span>
         <span v-else class="flex space-x-2 items-center">
-            <SafeImage :src="getIconUrl(selected.symbol ? selected.symbol.toLowerCase() : selected.name, props.type)"
+            <SafeImage
+                :src="selected.icon ?? getIconUrl(selected.symbol ? selected.symbol.toLowerCase() : selected.name, props.type)"
                 :alt="selected.symbol ? selected.symbol : selected.name" class="w-5 h-5 rounded-full" />
             <span>
                 {{ selected.name }}
@@ -79,7 +80,7 @@ function select(item: any) {
             <ul class="list-none max-h-64 overflow-y-auto">
                 <li v-for="item in items" @click="select(item)"
                     class="flex space-x-2 items-center px-4 py-3 cursor-pointer hover:(bg-true-gray-600) rounded-lg">
-                    <SafeImage :src="getIconUrl(item.name, props.type)" :alt="item.name"
+                    <SafeImage :src="selected.icon ?? getIconUrl(item.name, props.type)" :alt="item.name"
                         class="w-6 h-6 mt-0.5 rounded-full" />
                     <span>
                         {{ item.name }}
