@@ -24,6 +24,9 @@ const tokenList1 = ref(null)
 const inputAmount = ref(null as number | null)
 const outputAmount = ref(null as number | null)
 
+const defaultPlaceholder = "0.0"
+const placeholder = ref(defaultPlaceholder)
+
 
 onMounted(init)
 
@@ -75,26 +78,35 @@ async function getSupportedTokens() {
 }
 
 async function getQuote() {
-    outputAmount.value = null
-    if (!selectedChain0.value || !selectedChain1.value || !selectedToken0.value || !selectedToken1.value || !inputAmount.value) return
-    const result = await quote({
-        fromChainId: selectedChain0.value.chainId,
-        toChainId: selectedChain1.value.chainId,
-        fromTokenAddress: (selectedToken0.value as any).address,
-        toTokenAddress: (selectedToken1.value as any).address,
-        fromAmount: inputAmount.value * 10 ** (selectedToken0.value as any).decimals,
-        userAddress: address.value,
-        uniqueRoutesPerBridge: true,
-        sort: "time", // can provide option to user
-    } as any)
-    console.log(result.result)
-    if (result.result.routes?.length > 0) {
-        const toAmount = result.result.routes[result.result.routes.length - 1].toAmount
-        console.log("quote result", toAmount)
-        outputAmount.value = toAmount
+    try {
+        placeholder.value = "Loading..."
+        outputAmount.value = null
+        if (!selectedChain0.value || !selectedChain1.value || !selectedToken0.value || !selectedToken1.value || !inputAmount.value) return
+        const result = await quote({
+            fromChainId: selectedChain0.value.chainId,
+            toChainId: selectedChain1.value.chainId,
+            fromTokenAddress: (selectedToken0.value as any).address,
+            toTokenAddress: (selectedToken1.value as any).address,
+            fromAmount: inputAmount.value * 10 ** (selectedToken0.value as any).decimals,
+            userAddress: address.value,
+            uniqueRoutesPerBridge: true,
+            sort: "time", // can provide option to user
+        } as any)
+        console.log(result.result)
+        if (result.result.routes?.length > 0) {
+            const toAmount = result.result.routes[result.result.routes.length - 1].toAmount
+            console.log("quote result", toAmount)
+            outputAmount.value = toAmount
+        }
+        else {
+            outputAmount.value = 0
+        }
     }
-    else {
-        outputAmount.value = 0
+    catch (e) {
+        console.error(e);
+    }
+    finally {
+        placeholder.value = defaultPlaceholder
     }
 }
 
@@ -124,8 +136,8 @@ function transfer() {
             <InputField label="From token" v-model="selectedToken0" v-model:inputValue="inputAmount" placeholder="0.0"
                 :list="tokenList0" v-debounce:300ms="getQuote" />
             <div class="my-1.5 w-full text-center">&darr;</div>
-            <InputField label="To token" v-model="selectedToken1" v-model:inputValue="outputAmount" placeholder="0.0"
-                :list="tokenList1" disabled="true" />
+            <InputField label="To token" v-model="selectedToken1" v-model:inputValue="outputAmount"
+                :placeholder="placeholder" :list="tokenList1" disabled="true" />
         </div>
 
         <div class="mt-5">
