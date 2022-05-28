@@ -47,8 +47,6 @@ async function getSupportedTokens() {
     tokenList0.value = tokens.data.result
     tokenList1.value = tokens.data.result
 
-    selectedToken0.value = tokens.data.result
-    selectedToken1.value = tokens.data.result
 }
 
 function transfer() {
