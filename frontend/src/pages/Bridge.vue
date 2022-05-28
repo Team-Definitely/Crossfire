@@ -18,7 +18,7 @@ function transfer() {
 </script>
 
 <template>
-    <div class="mt-20 w-full mx-auto min-w-72 md:min-w-96 w-45 bg-dark-100 p-5 rounded-lg">
+    <div class="mt-20 w-10/12 mx-auto min-w-72 md:(min-w-96 w-45) bg-dark-100 p-5 rounded-lg">
         <h1 class="font-bold text-xl">Bridge</h1>
         <h3 class="text-sm text-gray-300">Transfer tokens between varying chains</h3>
 
@@ -41,7 +41,7 @@ function transfer() {
 
         <div class="mt-5">
             <button @click="transfer"
-                class="w-full bg-teal-500 hover:bg-teal-600 transition rounded-lg p-3 font-bold">Transfer</button>
+                class="w-full bg-primary-500 hover:bg-primary-600 transition rounded-lg p-3 font-bold">Transfer</button>
         </div>
     </div>
 </template>

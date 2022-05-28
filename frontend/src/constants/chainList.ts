@@ -7,7 +7,7 @@ export const chains = [
     },
     {
         chainId: 137,
-        name: 'Polygon Mainnet',
+        name: 'Polygon',
         symbol: 'MATIC'
     },
 ]

@@ -62,14 +62,14 @@ function select(item: any) {
         </span>
     </button>
     <Modal v-model="open" :close="closeModal">
-        <div class="bg-true-gray-700 text-white rounded-lg w-full md:w-1/5">
+        <div class="bg-true-gray-700 text-white rounded-lg w-10/12 md:w-1/5">
             <div class="p-5 bg-true-gray-800 rounded-t-lg">
                 Select a {{ props.type }}
             </div>
             <ul class="list-none">
                 <li v-for="item in items" @click="select(item)"
-                    class="flex justify-between items-center px-4 py-3 max-h-36 overflow-y-auto cursor-pointer hover:(bg-true-gray-600) rounded-lg">
-                    <img :src="getIconUrl(item.symbol.toLowerCase())" :alt="item.symbol" class="w-6 h-6" />
+                    class="flex space-x-2 items-center px-4 py-3 max-h-36 overflow-y-auto cursor-pointer hover:(bg-true-gray-600) rounded-lg">
+                    <img :src="getIconUrl(item.symbol.toLowerCase())" :alt="item.symbol" class="w-6 h-6 mt-0.5" />
                     <span>
                         {{ item.name }}
                     </span>
