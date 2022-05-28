@@ -32,11 +32,14 @@ async function getSupportedChains() {
     chainList1.value = chains.data.result
 
     selectedChain0.value = (chainList0.value as any)[0]
-    selectedChain1.value = (chainList1.value as any)[0]
+    selectedChain1.value = (chainList1.value as any)[1]
 }
 
 async function getSupportedTokens() {
+    tokenList0.value = null
+    tokenList1.value = null
     if (!selectedChain0.value || !selectedChain1.value) return
+
     const tokens = await axios.get('/token-lists/from-token-list', {
         params: {
             fromChainId: selectedChain0.value.chainId,
@@ -72,9 +75,9 @@ function transfer() {
 
         </div>
         <div class="mt-5">
-            <InputField label="First token" v-model="selectedToken0" placeholder="0.0" :list="tokenList0" />
-            <div class="mt-3"></div>
-            <InputField label="Second token" v-model="selectedToken1" placeholder="0.0" :list="tokenList1" />
+            <InputField label="From token" v-model="selectedToken0" placeholder="0.0" :list="tokenList0" />
+            <div class="my-1.5 w-full text-center">&darr;</div>
+            <InputField label="To token" v-model="selectedToken1" placeholder="0.0" :list="tokenList1" />
         </div>
 
         <div class="mt-5">
