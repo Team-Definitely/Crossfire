@@ -6,7 +6,7 @@ axios.defaults.baseURL = "https://api.socket.tech/v2/";
 axios.defaults.headers.common["API-KEY"] =
   "645b2c8c-5825-4930-baf3-d9b997fcd88c"; // public tha already, kal aana
 
-function generateParams(name, array) {
+export function generateParams(name, array) {
   let result = "";
   if (array != null && array.length > 0) {
     for (let idx = 0; idx < array.length; idx++) {
@@ -18,25 +18,25 @@ function generateParams(name, array) {
 }
 // SERVER
 
-async function gasPrice(chainId) {
+export async function gasPrice(chainId) {
   const gasPrice = await axios.get(`/gas-price?chainId=${chainId}`);
   console.log(gasPrice.data);
   return gasPrice.data;
 }
 
-async function getSupportedChains() {
+export async function getSupportedChains() {
   const chains = await axios.get(`/supported/chains`);
   console.log(chains.data);
   return chains.data;
 }
 
-async function getNotifications() {
+export async function getNotifications() {
   const notifications = await axios.get(`/notifications`);
   console.log(notifications.data);
   return notifications.data;
 }
 
-async function getBuildTx(
+export async function getBuildTx(
   data = {
     sender: null,
     recipient: null,
@@ -74,17 +74,17 @@ async function getBuildTx(
   }
 }
 
-async function postBuildTx(data) {
+export async function postBuildTx(data) {
   axios.post(data);
 }
 // BALANCES
 
-async function getbalances(userAddress) {
+export async function getbalances(userAddress) {
   const balances = await axios.get(`/balances?userAddress=${userAddress}`);
   console.log(balances.data);
   return balances.data;
 }
-async function debank(userAddress) {
+export async function debank(userAddress) {
   const balances = await axios.get(
     `/balances/debank?userAddress=${userAddress}`
   );
@@ -92,7 +92,7 @@ async function debank(userAddress) {
   return balances.data;
 }
 
-async function getTokenBalance(tokenAddress, chainId, userAddress) {
+export async function getTokenBalance(tokenAddress, chainId, userAddress) {
   const tokenBalance = await axios.get(
     `/balances/token-balance?tokenAddress=${tokenAddress}&chainId=${chainId}&userAddress=${userAddress}`
   );
@@ -101,7 +101,7 @@ async function getTokenBalance(tokenAddress, chainId, userAddress) {
 }
 
 // TOKEN LISTS
-async function toTokenList(
+export async function toTokenList(
   data = {
     fromChainId: null,
     toChainId: null,
@@ -138,7 +138,7 @@ async function toTokenList(
   }
 }
 
-async function fromTokenList(
+export async function fromTokenList(
   data = {
     fromChainId: null,
     toChainId: null,
@@ -176,7 +176,7 @@ async function fromTokenList(
 }
 
 // QUOTE
-async function quote(
+export async function quote(
   data = {
     fromChainId: null,
     fromTokenAddress: null,

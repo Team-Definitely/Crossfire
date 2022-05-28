@@ -4,6 +4,7 @@ import axios from '~/utils/axios';
 import Dropdown from '../components/Dropdown.vue';
 import InputField from '../components/InputField.vue';
 import { Chain } from '~/interfaces'
+import { quote } from '../utils/requests'
 
 const selectedChain0 = ref(null as Chain | null)
 const selectedChain1 = ref(null as Chain | null)
@@ -77,7 +78,7 @@ function transfer() {
         <div class="mt-5">
             <InputField label="From token" v-model="selectedToken0" placeholder="0.0" :list="tokenList0" />
             <div class="my-1.5 w-full text-center">&darr;</div>
-            <InputField label="To token" v-model="selectedToken1" placeholder="0.0" :list="tokenList1" />
+            <InputField label="To token" v-model="selectedToken1" placeholder="0.0" :list="tokenList1" disabled="true" />
         </div>
 
         <div class="mt-5">

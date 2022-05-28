@@ -77,9 +77,9 @@ function select(item: any) {
     <Modal v-model="open" :close="closeModal">
         <div class="bg-true-gray-700 text-white rounded-lg w-96">
             <div class="p-5 bg-true-gray-800 rounded-t-lg">
-                Select a {{ props.type }} 
+                Select a {{ props.type }}
             </div>
-            <div class="px-5 pt-4 pb-2 border-b border-gray-200">
+            <div v-if="props.type === 'Token'" class="px-5 pt-4 pb-2 border-b border-gray-200">
                 <div
                     class="flex items-center px-2 w-full bg-gray-100 border-gray-100 rounded-lg text-gray-800 sm:text-sm overflow-hidden focus-within:border-secondary mb-4 focus-within:bg-white relative">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
