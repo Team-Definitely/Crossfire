@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import axios from '~/utils/axios';
 import Dropdown from '../components/Dropdown.vue';
 import InputField from '../components/InputField.vue';
 
@@ -9,7 +10,26 @@ const selectedChain1 = ref(null)
 const selectedToken0 = ref(null)
 const selectedToken1 = ref(null)
 
-const tokenList0 = [{ name: 'DAI', symbol: 'DAI' }]
+const chainList0 = ref(null)
+const chainList1 = ref(null)
+const tokenList0 = ref(null)
+const tokenList1 = ref(null)
+
+
+onMounted(init)
+
+function init() {
+    getSupportedChains()
+}
+
+async function getSupportedChains() {
+    const chains = await axios.get(`/supported/chains`);
+    console.log(chains.data.result)
+    chainList0.value = chains.data.result
+    chainList1.value = chains.data.result
+}
+
+
 
 function transfer() {
 
@@ -23,12 +43,12 @@ function transfer() {
         <h3 class="text-sm text-gray-300">Transfer tokens between varying chains</h3>
 
         <div class="flex flex-col md:flex-row md:items-center justify-between mt-3">
-            <Dropdown v-model="selectedChain0">
+            <Dropdown v-model="selectedChain0" :list="chainList0">
                 From Chain
             </Dropdown>
             <span class="hidden md:block">&rarr;</span>
             <span class="block md:hidden my-2 mx-auto">&darr;</span>
-            <Dropdown v-model="selectedChain1">
+            <Dropdown v-model="selectedChain1" :list="chainList1">
                 To Chain
             </Dropdown>
 
@@ -36,7 +56,7 @@ function transfer() {
         <div class="mt-5">
             <InputField label="First token" v-model="selectedToken0" placeholder="0.0" :list="tokenList0" />
             <div class="mt-3"></div>
-            <InputField label="Second token" v-model="selectedToken1" placeholder="0.0" />
+            <InputField label="Second token" v-model="selectedToken1" placeholder="0.0" :list="tokenList1" />
         </div>
 
         <div class="mt-5">
