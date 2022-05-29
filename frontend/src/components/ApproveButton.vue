@@ -23,22 +23,22 @@ const props = defineProps({
 
 onMounted(init)
 
-function init() {
-    checkAllowance()
+async function init() {
+    await checkAllowance()
 }
 
 async function checkAllowance() {
-    if (!props.token || !props.spender) return
+    // if (!props.token || !props.spender) return
     loadingAllowance.value = true
 
     try {
         const web3Provider = new ethers.providers.Web3Provider(window.ethereum)
         const userAddress = await web3Provider.getSigner().getAddress()
 
-        console.log("allowance for ", props.token, props.spender)
 
         const contract = new ethers.Contract(props.token.address, ERC20ABI, web3Provider)
         const allowance = await contract.allowance(userAddress, props.spender)
+        console.log("allowance for ", props.token, props.spender, formatEther(allowance))
         if (+formatEther(allowance) > 0) {
             hasAllowance.value = true
         }
@@ -83,7 +83,7 @@ async function approve() {
         class="w-full text-xs bg-primary-700 hover:bg-primary-800 transition rounded-lg p-3 font-bold"
         :disabled="loading || loadingAllowance">
         <span v-if="!hasAllowance">Approve {{ token.symbol }}</span>
-        <span v-else-if="loadingAllowance">Checking allowance</span>
+        <span v-else-if="loadingAllowance">Checking allowance...</span>
         <span v-else-if="loading">Loading...</span>
     </button>
 </template>

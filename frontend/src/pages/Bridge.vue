@@ -128,7 +128,7 @@ async function getQuote() {
             quoteResult.value = { route: result.result.routes[result.result.routes.length - 1] } as any
 
             const txn = await postBuildTx(quoteResult.value)
-            spender.value = txn.data.result.txTarget
+            spender.value = txn.data.result.approvalData.allowanceTarget
         }
         else {
             outputAmount.value = 0
