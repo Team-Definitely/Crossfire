@@ -234,34 +234,50 @@ async function transfer() {
 <template>
     <div class="md:(flex)">
         <!-- <div class="mt-20 w-10/12 mx-auto min-w-72 md:(min-w-96 w-45) bg-dark-100 p-5 rounded-lg"> -->
-        <div class="mt-20 w-10/12 mx-auto min-w-72 md:w-1/3 bg-dark-100 p-5 rounded-lg h-full">
-            <h1 class="font-bold text-xl">Bridge</h1>
-            <h3 class="text-sm text-gray-300">Transfer tokens between varying chains</h3>
+        <div class="mt-20 w-10/12 mx-auto min-w-72 md:w-1/3 bg-dark-100 rounded-lg h-full">
+            <div class="p-5">
+                <h1 class="font-bold text-xl">Bridge</h1>
+                <h3 class="text-sm text-gray-300">Transfer tokens between varying chains</h3>
 
-            <div class="flex flex-col md:flex-row md:items-center space-x-3 mt-3">
-                <Dropdown v-model="selectedChain0" :list="chainList0">
-                    From Chain
-                </Dropdown>
-                <span class="hidden md:block">&rarr;</span>
-                <span class="block md:hidden my-2 mx-auto">&darr;</span>
-                <Dropdown v-model="selectedChain1" :list="chainList1">
-                    To Chain
-                </Dropdown>
+                <div class="flex flex-col md:flex-row md:items-center space-x-3 mt-3">
+                    <Dropdown v-model="selectedChain0" :list="chainList0">
+                        From Chain
+                    </Dropdown>
+                    <span class="hidden md:block">&rarr;</span>
+                    <span class="block md:hidden my-2 mx-auto">&darr;</span>
+                    <Dropdown v-model="selectedChain1" :list="chainList1">
+                        To Chain
+                    </Dropdown>
 
+                </div>
+                <div class="mt-5">
+                    <InputField label="From token" v-model="selectedToken0" v-model:inputValue="inputAmount"
+                        placeholder="0.0" :list="tokenList0" v-debounce:500ms="getQuote" />
+                    <div class="my-1.5 w-full text-center">&darr;</div>
+                    <InputField label="To token" v-model="selectedToken1" v-model:inputValue="outputAmount"
+                        :placeholder="placeholder" :list="tokenList1" disabled="true" />
+                </div>
+
+                <div class="mt-5">
+                    <ApproveButton v-if="selectedToken0 && quoteResult" :token="selectedToken0" :spender="spender" />
+                    <button @click="transfer"
+                        class="w-full mt-2 bg-primary-500 hover:bg-primary-600 transition rounded-lg p-3 font-bold"
+                        :disabled="transferLoading">Transfer</button>
+                </div>
             </div>
-            <div class="mt-5">
-                <InputField label="From token" v-model="selectedToken0" v-model:inputValue="inputAmount"
-                    placeholder="0.0" :list="tokenList0" v-debounce:500ms="getQuote" />
-                <div class="my-1.5 w-full text-center">&darr;</div>
-                <InputField label="To token" v-model="selectedToken1" v-model:inputValue="outputAmount"
-                    :placeholder="placeholder" :list="tokenList1" disabled="true" />
-            </div>
-
-            <div class="mt-5">
-                <ApproveButton v-if="selectedToken0 && quoteResult" :token="selectedToken0" :spender="spender" />
-                <button @click="transfer"
-                    class="w-full mt-2 bg-primary-500 hover:bg-primary-600 transition rounded-lg p-3 font-bold"
-                    :disabled="transferLoading">Transfer</button>
+            <div class="bg-dark-500 p-5 rounded-b-lg bg-true-gray-700 bg-opacity-75 py-3 px-3.5 mt-5"
+                :class="protocolFees == null || gasFees == null || bridgeUsed.length == 0 ? 'hidden' : ''">
+                <div class="text-sm flex flex-row justify-between text-gray-200 my-2"><span>Bridge Name</span><span>{{
+                        bridgeUsed[bridgeUsed.length - 1]
+                }}</span>
+                </div>
+                <div class="text-sm flex flex-row justify-between text-gray-200 my-2"><span>Bridge
+                        Fee</span><span>${{ protocolFees?.toLocaleString('en-US') }}
+                    </span></div>
+                <div class="text-sm flex flex-row justify-between text-gray-200 my-2"><span>Gas Fee</span><span>${{
+                        gasFees?.toLocaleString('en-US')
+                }}
+                    </span></div>
             </div>
         </div>
         <div class="mt-20 w-10/12 mx-auto min-w-72 md:w-1/3 bg-dark-100 p-5 rounded-lg">
@@ -323,19 +339,5 @@ async function transfer() {
                 </div>
             </div>
         </div>
-    </div>
-    <div class="w-10/12 mx-auto min-w-72 md:(min-w-96 w-45) bg-dark-400 p-5 rounded-lg rounded-xl bg-true-gray-700 bg-opacity-75 py-3 px-3.5 my-5"
-        :class="protocolFees == null || gasFees == null || bridgeUsed.length == 0 ? 'hidden' : ''">
-        <div class="text-sm flex flex-row justify-between text-gray-200 my-2"><span>Bridge Name</span><span>{{
-                bridgeUsed[bridgeUsed.length - 1]
-        }}</span>
-        </div>
-        <div class="text-sm flex flex-row justify-between text-gray-200 my-2"><span>Bridge
-                Fee</span><span>${{ protocolFees?.toLocaleString('en-US') }}
-            </span></div>
-        <div class="text-sm flex flex-row justify-between text-gray-200 my-2"><span>Gas Fee</span><span>${{
-                gasFees?.toLocaleString('en-US')
-        }}
-            </span></div>
     </div>
 </template>
