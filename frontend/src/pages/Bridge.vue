@@ -90,6 +90,9 @@ async function getSupportedTokens() {
     // console.log("Tokens", tokens.data.result)
     tokenList0.value = fromTokens.data.result
     tokenList1.value = toTokens.data.result
+
+    selectedToken0.value = fromTokens.data.result[0]
+    selectedToken1.value = toTokens.data.result[0]
 }
 
 async function getQuote() {
