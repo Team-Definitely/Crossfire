@@ -139,9 +139,15 @@ async function transfer() {
         transferLoading.value = true
         const result = await postBuildTx(quoteResult.value)
         const txnCalldata = result.data.result
+
         const web3Provider = new ethers.providers.Web3Provider(window.ethereum)
         console.log(txnCalldata)
-        const txn = await web3Provider.sendTransaction(txnCalldata.txData)
+
+        const txn = await web3Provider.call({
+            to: txnCalldata.txTarget,
+            data: txnCalldata.txData,
+            gasLimit: 200000,
+        })
 
         // @ts-ignore
         console.log("Txn hash", txn.hash)
