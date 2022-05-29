@@ -5,7 +5,7 @@ import Navbar from '~/components/Navbar.vue';
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-dark-400 to-dark-600 text-white pt-2">
+  <div class="min-h-screen bg-gradient-to-b from-dark-400 to-dark-600 text-white pt-2 pb-32">
     <Navbar />
     <router-view />
   </div>

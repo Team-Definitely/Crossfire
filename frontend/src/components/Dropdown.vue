@@ -1,8 +1,6 @@
 
 <script setup lang="ts">
 import { onMounted, Ref, ref, defineEmits, watch } from 'vue';
-import { chains } from '~/constants/chainList'
-import { tokens } from '~/constants/tokenList'
 import { getIconUrl } from '~/utils/icons'
 import { useVModel } from '@vueuse/core'
 import SafeImage from './SafeImage.vue';
@@ -55,7 +53,7 @@ async function updateList() {
         if (keyupdate.value != null || keyupdate.value != "") {
             console.log('inside filter')
             filteredItems.value = items.value.filter(function (item) {
-                return item.symbol.toLowerCase().includes(keyupdate.value.trim().toLowerCase())
+                return item.symbol.toLowerCase().includes(keyupdate.value.trim().toLowerCase()) || item.name.toLowerCase().includes(keyupdate.value.trim().toLowerCase())
             })
         }
 
@@ -132,7 +130,7 @@ function select(item: any) {
                 </div>
 
             </div>
-            <ul class="list-none max-h-64 overflow-y-auto">
+            <ul class="list-none max-h-64 overflow-y-auto pt-1">
                 <li v-for="item in filteredItems.length == 0 ? items : filteredItems" @click="select(item)"
                     class="flex space-x-2 items-center px-4 py-3 cursor-pointer hover:(bg-true-gray-600) rounded-lg">
                     <SafeImage :src="item.icon ?? getIconUrl(item.name, props.type)" :alt="item.name"
