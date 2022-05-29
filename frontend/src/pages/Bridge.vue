@@ -36,6 +36,10 @@ const transferLoading = ref(false)
 
 const spender = ref('')
 
+const bridgeUsed = ref([] as any[])
+const protocolFees = ref(null)
+const gasFees = ref(null)
+
 const history = ref([] as any[])
 onMounted(init)
 
@@ -55,7 +59,9 @@ function onSelectedChainChange() {
     inputAmount.value = null
     outputAmount.value = null
     quoteResult.value = null
-
+    gasFees.value = null
+    protocolFees.value = null
+    bridgeUsed.value = []
     getSupportedTokens()
 }
 
@@ -123,7 +129,27 @@ async function getQuote() {
         console.log(result.result)
         if (result.result.routes?.length > 0) {
             const toAmount = result.result.routes[result.result.routes.length - 1].toAmount
-            console.log("quote result", toAmount)
+            bridgeUsed.value = result.result.routes[result.result.routes.length - 1].usedBridgeNames
+            gasFees.value = result.result.routes[result.result.routes.length - 1].totalGasFeesInUsd
+            try {
+                const user_transactions = result.result.routes[result.result.routes.length - 1].userTxs
+                for (let txs in user_transactions) {
+                    if (user_transactions[txs].userTxType == "fund-movr") {
+                        console.log(user_transactions[txs])
+                        console.log(22222)
+                        const stepss = user_transactions[txs].steps
+                        for (let step in stepss) {
+                            if (stepss[step].type == "bridge") {
+                                protocolFees.value = stepss[step].protocolFees.feesInUsd
+                            }
+                        }
+                    }
+                }
+            }
+            catch {
+                console.log('moving to next step for bridge fee')
+            }
+            console.log("quote result", toAmount, "bridgeUsed", bridgeUsed)
             outputAmount.value = +formatUnits(toAmount, (selectedToken1.value as any).decimals)
 
             quoteResult.value = { route: result.result.routes[result.result.routes.length - 1] } as any
@@ -185,7 +211,7 @@ async function transfer() {
 </script>
 
 <template>
-    <div class="mt-20 w-10/12 mx-auto min-w-72 md:(min-w-96 w-45) bg-dark-100 p-5 rounded-lg">
+    <div class="mt-10 w-10/12 mx-auto min-w-72 md:(min-w-96 w-45) bg-dark-100 p-5 rounded-lg">
         <h1 class="font-bold text-xl">Bridge</h1>
         <h3 class="text-sm text-gray-300">Transfer tokens between varying chains</h3>
 
@@ -214,5 +240,19 @@ async function transfer() {
                 class="w-full mt-2 bg-primary-500 hover:bg-primary-600 transition rounded-lg p-3 font-bold"
                 :disabled="transferLoading">Transfer</button>
         </div>
+    </div>
+    <div class="w-10/12 mx-auto min-w-72 md:(min-w-96 w-45) bg-dark-400 p-5 rounded-lg rounded-xl bg-true-gray-700 bg-opacity-75 py-3 px-3.5 my-5"
+        :class="protocolFees == null || gasFees == null || bridgeUsed.length == 0 ? 'hidden' : ''">
+        <div class="text-sm flex flex-row justify-between text-gray-200 my-2"><span>Bridge Name</span><span>{{
+                bridgeUsed[bridgeUsed.length - 1]
+        }}</span>
+        </div>
+        <div class="text-sm flex flex-row justify-between text-gray-200 my-2"><span>Bridge
+                Fee</span><span>${{ protocolFees?.toLocaleString('en-US') }}
+            </span></div>
+        <div class="text-sm flex flex-row justify-between text-gray-200 my-2"><span>Gas Fee</span><span>${{
+                gasFees?.toLocaleString('en-US')
+        }}
+            </span></div>
     </div>
 </template>
