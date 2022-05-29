@@ -11,7 +11,8 @@ import Chevron from './Icons/Chevron.vue';
 const open = ref(false)
 const items = ref([] as any[])
 const frequent = ref([] as any[])
-
+const keyupdate = ref("")
+const filteredItems = ref([] as any[])
 const props = defineProps({
     type: {
         default: 'Chain',
@@ -34,6 +35,10 @@ watch(() => props.list, () => {
     updateList()
 })
 
+watch(() => keyupdate.value, () => {
+    console.log(keyupdate.value)
+    updateList()
+})
 function openModal() {
     open.value = true
 }
@@ -41,17 +46,31 @@ function closeModal() {
     open.value = false
 }
 
-function updateList() {
-    console.log(items.value)
-    if (props.type === 'Chain') items.value = props.list as any[] ?? chains
+async function updateList() {
+    if (props.type === 'Chain') items.value = props.list as any[]
     else if (props.type === 'Token') {
-        items.value = props.list as any[] ?? tokens
+        items.value = props.list as any[]
+    }
+    if (items.value != null) {
+        if (keyupdate.value != null || keyupdate.value != "") {
+            console.log('inside filter')
+            filteredItems.value = items.value.filter(function (item) {
+                return item.symbol.toLowerCase().includes(keyupdate.value.trim().toLowerCase())
+            })
+        }
+
+        frequent.value = items.value.filter(function (item) {
+            return ["DAI", "MATIC", "ETH", "USDT", "USDC"].includes(item.symbol);
+        });
+    }
+    else {
+        await sleep(1000);
     }
 
-    frequent.value = items.value.filter(function (item) {
-        return ["DAI", "MATIC", "ETH", "USDT", "USDC"].includes(item.symbol);
-    });
+
+
 }
+let sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 function init() {
     updateList()
@@ -63,6 +82,8 @@ function select(item: any) {
     selected.value = item
     closeModal()
 }
+
+
 
 </script>
 
@@ -86,7 +107,7 @@ function select(item: any) {
             <div class="p-5 bg-true-gray-800 rounded-t-lg">
                 Select a {{ props.type }}
             </div>
-            <div v-if="props.type === 'Token'" class="px-5 pt-4 pb-2 border-b border-gray-200">
+            <div v-if="props.type === 'Token'" class="px-5 pb-2 bg-true-gray-800">
                 <div
                     class="flex items-center px-2 w-full bg-gray-100 border-gray-100 rounded-lg text-gray-800 sm:text-sm overflow-hidden focus-within:border-secondary mb-4 focus-within:bg-white relative">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -95,8 +116,7 @@ function select(item: any) {
                         <circle cx="11" cy="11" r="8"></circle>
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
-                    <input placeholder="Search Name or Address" class="w-full py-2.5"
-                        role="search" spellcheck="false" value="">
+                    <input v-model="keyupdate" placeholder="Search for a token" class="w-full py-2.5 outline-0	">
                 </div>
                 <div class="flex flex-wrap gap-x-2 gap-y-2 mb-4">
                     <div v-for="item in frequent" @click="select(item)" class="text-black flex items-center border border-gray-800 bg-true-gray-600
@@ -109,12 +129,10 @@ function select(item: any) {
                     </div>
 
                 </div>
-                <div class="flex justify-between items-center sticky top-0 text-xs font-medium text-gray-500 px-1">
-                    <span>Token name</span><span>Balance</span>
-                </div>
+
             </div>
             <ul class="list-none max-h-64 overflow-y-auto">
-                <li v-for="item in items" @click="select(item)"
+                <li v-for="item in filteredItems.length == 0 ? items : filteredItems" @click="select(item)"
                     class="flex space-x-2 items-center px-4 py-3 cursor-pointer hover:(bg-true-gray-600) rounded-lg">
                     <SafeImage :src="item.icon ?? getIconUrl(item.name, props.type)" :alt="item.name"
                         class="w-6 h-6 mt-0.5 rounded-full" />
