@@ -146,6 +146,8 @@ async function transfer() {
         const txn = await web3Provider.call({
             to: txnCalldata.txTarget,
             data: txnCalldata.txData,
+            chainId: txnCalldata.chainId,
+            value: txnCalldata.value,
             gasLimit: 200000,
         })
 
