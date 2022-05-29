@@ -161,10 +161,8 @@ async function transfer() {
             gasLimit: 800000,
         })
 
-
-
         // @ts-ignore
-        console.log("Txn hash", txn)
+        console.log("Txn", txn)
     }
     catch (e) {
         console.error(e);
