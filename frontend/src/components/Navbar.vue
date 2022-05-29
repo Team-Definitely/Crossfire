@@ -4,13 +4,17 @@ import { ConnectWalletButton, useMetaMaskWallet, Jazzicon } from 'vue-connect-wa
 import { useWeb3Store } from '../stores/web3Store';
 import { ethers } from 'ethers'
 import { storeToRefs } from 'pinia';
+import SafeImage from '~/components/SafeImage.vue'
+import { loadHistory } from '~/utils/history'
 
 const wallet = useMetaMaskWallet()
 const store = useWeb3Store()
 
-const { address } = storeToRefs(store)
+const { address, transactions } = storeToRefs(store)
 
 const open = ref(false)
+
+const history = ref([] as any[])
 
 onMounted(init)
 
@@ -19,6 +23,8 @@ async function init() {
     if (accounts.length > 0) connectWallet()
     wallet.onAccountsChanged(() => connectWallet())
     wallet.onChainChanged(() => connectWallet())
+
+    history.value = loadHistory()
 }
 
 async function connectWallet() {
@@ -56,7 +62,8 @@ function closeModal() {
             </div>
             <ul class="list-none flex space-x-2 items-center">
                 <li class="z-0">
-                    <ConnectWalletButton @click="connectWallet" :address="address ?? ''" :dark="true" />
+                    <ConnectWalletButton @click="connectWallet" :address="address ?? ''" :dark="true"
+                        :txn-count="transactions.length" />
                 </li>
             </ul>
         </div>
@@ -66,7 +73,7 @@ function closeModal() {
     <Modal v-model="open" :close="closeModal">
         <div class="bg-true-gray-700 text-white rounded-lg w-5/12">
             <header class="p-5 bg-dark-500 rounded-t-lg flex items-center justify-between" v-if="address">
-                <div class="flex items-center space-x-3">
+                <div class="md:(flex items-center space-x-3)">
                     <Jazzicon :address="address" diameter="40" />
                     <h1 :title="address" class="font-bold mb-1"> {{
                             address.substring(0, 10) +
@@ -79,8 +86,54 @@ function closeModal() {
                     Connected
                 </div>
             </header>
-            <div class="p-5">
+            <div class="p-5 overflow-y-auto max-h-96">
                 <h1 class="font-semibold">Past transactions</h1>
+                <div class="mt-1">
+                    <div v-for="item in history.concat(history)" :key="item.hash"
+                        class=" border border-gray-500 rounded-lg p-5 my-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="flex items-center space-x-3">
+                                    <div class="flex items-center space-x-1.5">
+                                        <SafeImage :src="item.fromChain.icon" class="w-5 h-5 rounded-full"
+                                            :title="item.fromChain.name" />
+                                        <h1 class="text-sm">{{ item.fromChain.name }}</h1>
+                                    </div>
+                                    <div>&rarr;</div>
+                                    <div class="flex items-center space-x-1.5">
+                                        <SafeImage :src="item.toChain.icon" class="w-5 h-5 rounded-full"
+                                            :title="item.toChain.name" />
+                                        <h1 class="text-sm">{{ item.toChain.name }}</h1>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3 flex flex-col">
+                                    <div class="flex items-center space-x-1.5">
+                                        <SafeImage :src="item.fromToken.icon" class="w-5 h-5 rounded-full"
+                                            :title="item.fromToken.name" />
+                                        <p class="text-xl font-mono">{{ item.fromToken.amount }}</p>
+                                    </div>
+                                    <div class="ml-0.5">&darr;</div>
+                                    <div class="flex items-center space-x-1.5">
+                                        <SafeImage :src="item.toToken.icon" class="w-5 h-5 rounded-full"
+                                            :title="item.toToken.name" />
+                                        <p class="text-xl font-mono">{{ item.toToken.amount }}</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div>
+                                <div class="text-sm">
+                                    {{ new Date(item.time).toDateString() }}
+                                </div>
+                            </div>
+                        </div>
+                        <footer class="mt-3 text-xs font-mono text-primary-400">
+                            {{ item.hash }}
+                        </footer>
+
+                    </div>
+                </div>
             </div>
         </div>
     </Modal>
