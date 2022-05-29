@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { ConnectWalletButton, useMetaMaskWallet } from 'vue-connect-wallet'
+import { ConnectWalletButton, useMetaMaskWallet, Jazzicon } from 'vue-connect-wallet'
 import { useWeb3Store } from '../stores/web3Store';
 import { ethers } from 'ethers'
 import { storeToRefs } from 'pinia';
@@ -41,7 +41,7 @@ async function connectWallet() {
     })
 }
 
-function closeModal(){
+function closeModal() {
     open.value = false
 }
 
@@ -64,7 +64,25 @@ function closeModal(){
         </div>
     </nav>
     <Modal v-model="open" :close="closeModal">
-        test
+        <div class="bg-true-gray-700 text-white rounded-lg w-5/12">
+            <header class="p-5 bg-dark-500 rounded-t-lg flex items-center justify-between" v-if="address">
+                <div class="flex items-center space-x-3">
+                    <Jazzicon :address="address" diameter="40" />
+                    <h1 :title="address" class="font-bold mb-1"> {{
+                            address.substring(0, 10) +
+                            "..." +
+                            address.substring(address.length - 9)
+                    }}
+                    </h1>
+                </div>
+                <div class="uppercase border border-primary-500 text-primary-500 px-3 py-1.5 rounded-full text-xs">
+                    Connected
+                </div>
+            </header>
+            <div class="p-5">
+                <h1 class="font-semibold">Past transactions</h1>
+            </div>
+        </div>
     </Modal>
 </template>
 
