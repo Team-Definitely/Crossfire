@@ -89,7 +89,7 @@ function closeModal() {
             <div class="p-5 overflow-y-auto max-h-96">
                 <h1 class="font-semibold">Past transactions</h1>
                 <div class="mt-1">
-                    <div v-for="item in history.concat(history)" :key="item.hash"
+                    <div v-for="item in history" :key="item.hash"
                         class=" border border-gray-500 rounded-lg p-5 my-3">
                         <div class="flex items-center justify-between">
                             <div>
