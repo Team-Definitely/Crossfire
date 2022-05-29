@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { connect } from 'http2';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { ConnectWalletButton, useMetaMaskWallet } from 'vue-connect-wallet'
 import { useWeb3Store } from '../stores/web3Store';
 import { ethers } from 'ethers'
@@ -10,6 +9,8 @@ const wallet = useMetaMaskWallet()
 const store = useWeb3Store()
 
 const { address } = storeToRefs(store)
+
+const open = ref(false)
 
 onMounted(init)
 
@@ -21,6 +22,13 @@ async function init() {
 }
 
 async function connectWallet() {
+    console.log({ address: address.value, open: open.value });
+
+    if (address.value) {
+        open.value = true
+    }
+
+    console.log({ address: address.value, open: open.value });
     const accounts = await wallet.connect()
     if (typeof accounts === 'string') return
 
@@ -31,6 +39,10 @@ async function connectWallet() {
         address: accounts[0],
         chainId
     })
+}
+
+function closeModal(){
+    open.value = false
 }
 
 </script>
@@ -51,6 +63,9 @@ async function connectWallet() {
         <div class="h-6 bg-gradient-to-r from-primary-500 to-primary-600 rounded-b-lg">
         </div>
     </nav>
+    <Modal v-model="open" :close="closeModal">
+        test
+    </Modal>
 </template>
 
 <style scoped>

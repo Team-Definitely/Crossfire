@@ -1,8 +1,6 @@
 
 <script setup lang="ts">
 import { onMounted, Ref, ref, defineEmits, watch } from 'vue';
-import { chains } from '~/constants/chainList'
-import { tokens } from '~/constants/tokenList'
 import { getIconUrl } from '~/utils/icons'
 import { useVModel } from '@vueuse/core'
 import SafeImage from './SafeImage.vue';
@@ -55,7 +53,7 @@ async function updateList() {
         if (keyupdate.value != null || keyupdate.value != "") {
             console.log('inside filter')
             filteredItems.value = items.value.filter(function (item) {
-                return item.symbol.toLowerCase().includes(keyupdate.value.trim().toLowerCase())
+                return item.symbol.toLowerCase().includes(keyupdate.value.trim().toLowerCase()) || item.name.toLowerCase().includes(keyupdate.value.trim().toLowerCase())
             })
         }
 
