@@ -55,7 +55,7 @@ function closeModal() {
 
 <template>
     <nav class="bg-dark-300 m-2 rounded-lg">
-        <div class="flex justify-between items-center p-5">
+        <div class="flex justify-between items-center px-5 py-2">
             <div class="py-2">
                 <h1 class="logo">Crossfire</h1>
                 <h3 class="px-3 text-gray-300">by Team Definitely</h3>
