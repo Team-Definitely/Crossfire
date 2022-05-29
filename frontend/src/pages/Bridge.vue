@@ -4,10 +4,11 @@ import axios from '~/utils/axios';
 import Dropdown from '../components/Dropdown.vue';
 import InputField from '../components/InputField.vue';
 import { Chain } from '~/interfaces'
-import { getBuildTx, postBuildTx, quote } from '../utils/requests'
+import { postBuildTx, quote } from '../utils/requests'
 import { useWeb3Store } from '~/stores/web3Store';
 import { storeToRefs } from 'pinia';
 import { formatUnits } from '@ethersproject/units';
+import { ethers } from 'ethers';
 
 const { address } = storeToRefs(useWeb3Store())
 
@@ -133,18 +134,14 @@ async function transfer() {
     if (!quoteResult.value) return
     try {
         transferLoading.value = true
-        // const result = await getBuildTx({
-        //     sender: ,
-        //     recipient: ,
-        //     fromChainId: selectedChain0.value.chainId,
-        //     toChainId: selectedChain1.value.chainId,
-        //     fromTokenAddress: (selectedToken0.value as any).address,
-        //     toTokenAddress: (selectedToken1.value as any).address,
-        //     fromAmount: inputAmount.value * 10 ** (selectedToken0.value as any).decimals,
-        //     toAmount: outputAmount.value * 10 ** (selectedToken1.value as any).decimals,
-        // })
         const result = await postBuildTx(quoteResult.value)
-        console.log("result of post build tx", result)
+        const txnCalldata = result.data.result
+        const web3Provider = new ethers.providers.Web3Provider(window.ethereum)
+        console.log(txnCalldata)
+        const txn = await web3Provider.sendTransaction(txnCalldata.txData)
+
+        // @ts-ignore
+        console.log("Txn hash", txn.hash)
     }
     catch (e) {
         console.error(e);
@@ -182,7 +179,8 @@ async function transfer() {
 
         <div class="mt-5">
             <button @click="transfer"
-                class="w-full bg-primary-500 hover:bg-primary-600 transition rounded-lg p-3 font-bold">Transfer</button>
+                class="w-full bg-primary-500 hover:bg-primary-600 transition rounded-lg p-3 font-bold"
+                :disabled="transferLoading">Transfer</button>
         </div>
     </div>
 </template>

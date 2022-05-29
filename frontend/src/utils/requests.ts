@@ -72,7 +72,7 @@ export async function getBuildTx(
 }
 
 export async function postBuildTx(data) {
-  axios.post('/build-tx', data);
+  return await axios.post('/build-tx', data);
 }
 // BALANCES
 
