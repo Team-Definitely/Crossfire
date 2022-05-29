@@ -9,6 +9,7 @@ import { useWeb3Store } from '~/stores/web3Store';
 import { storeToRefs } from 'pinia';
 import { formatUnits } from '@ethersproject/units';
 import { ethers } from 'ethers';
+import ApproveButton from '~/components/ApproveButton.vue';
 
 const { address } = storeToRefs(useWeb3Store())
 
@@ -33,6 +34,8 @@ const placeholder = ref(defaultPlaceholder)
 
 const transferLoading = ref(false)
 
+const spender = ref('')
+
 onMounted(init)
 
 function init() {
@@ -50,12 +53,15 @@ function onSelectedChainChange() {
     selectedToken1.value = null
     inputAmount.value = null
     outputAmount.value = null
+    quoteResult.value = null
+
     getSupportedTokens()
 }
 
 function onTokenChange() {
     inputAmount.value = null
     outputAmount.value = null
+    quoteResult.value = null
 }
 
 async function getSupportedChains() {
@@ -90,6 +96,9 @@ async function getSupportedTokens() {
     // console.log("Tokens", tokens.data.result)
     tokenList0.value = fromTokens.data.result
     tokenList1.value = toTokens.data.result
+
+    selectedToken0.value = fromTokens.data.result[0]
+    selectedToken1.value = toTokens.data.result[0]
 }
 
 async function getQuote() {
@@ -117,6 +126,9 @@ async function getQuote() {
             outputAmount.value = +formatUnits(toAmount, (selectedToken1.value as any).decimals)
 
             quoteResult.value = { route: result.result.routes[result.result.routes.length - 1] } as any
+
+            const txn = await postBuildTx(quoteResult.value)
+            spender.value = txn.data.result.approvalData.allowanceTarget
         }
         else {
             outputAmount.value = 0
@@ -136,12 +148,23 @@ async function transfer() {
         transferLoading.value = true
         const result = await postBuildTx(quoteResult.value)
         const txnCalldata = result.data.result
+
         const web3Provider = new ethers.providers.Web3Provider(window.ethereum)
         console.log(txnCalldata)
-        const txn = await web3Provider.sendTransaction(txnCalldata.txData)
+
+        const txn = await web3Provider.getSigner().sendTransaction({
+            from: address.value ?? '',
+            to: txnCalldata.txTarget,
+            data: txnCalldata.txData,
+            chainId: txnCalldata.chainId,
+            value: txnCalldata.value,
+            gasLimit: 800000,
+        })
+
+
 
         // @ts-ignore
-        console.log("Txn hash", txn.hash)
+        console.log("Txn hash", txn)
     }
     catch (e) {
         console.error(e);
@@ -171,15 +194,16 @@ async function transfer() {
         </div>
         <div class="mt-5">
             <InputField label="From token" v-model="selectedToken0" v-model:inputValue="inputAmount" placeholder="0.0"
-                :list="tokenList0" v-debounce:300ms="getQuote" />
+                :list="tokenList0" v-debounce:500ms="getQuote" />
             <div class="my-1.5 w-full text-center">&darr;</div>
             <InputField label="To token" v-model="selectedToken1" v-model:inputValue="outputAmount"
                 :placeholder="placeholder" :list="tokenList1" disabled="true" />
         </div>
 
         <div class="mt-5">
+            <ApproveButton v-if="selectedToken0 && quoteResult" :token="selectedToken0" :spender="spender" />
             <button @click="transfer"
-                class="w-full bg-primary-500 hover:bg-primary-600 transition rounded-lg p-3 font-bold"
+                class="w-full mt-2 bg-primary-500 hover:bg-primary-600 transition rounded-lg p-3 font-bold"
                 :disabled="transferLoading">Transfer</button>
         </div>
     </div>
