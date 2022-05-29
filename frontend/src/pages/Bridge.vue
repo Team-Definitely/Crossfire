@@ -11,6 +11,7 @@ import { formatUnits } from '@ethersproject/units';
 import { ethers } from 'ethers';
 import ApproveButton from '~/components/ApproveButton.vue';
 import { addToHistory, loadHistory } from '~/utils/history'
+import { addTransaction } from '~/utils/transactions';
 const { address } = storeToRefs(useWeb3Store())
 
 const selectedChain0 = ref(null as Chain | null)
@@ -154,21 +155,23 @@ async function transfer() {
         const web3Provider = new ethers.providers.Web3Provider(window.ethereum)
         console.log(txnCalldata)
 
+
+        // const txn = await web3Provider.getSigner().sendTransaction({
+        //     from: address.value ?? '',
+        //     to: txnCalldata.txTarget,
+        //     data: txnCalldata.txData,
+        //     chainId: txnCalldata.chainId,
+        //     value: txnCalldata.value,
+        //     gasLimit: 800000,
+        // })
+
         const hash = 'randomhash'
-
-        const txn = await web3Provider.getSigner().sendTransaction({
-            from: address.value ?? '',
-            to: txnCalldata.txTarget,
-            data: txnCalldata.txData,
-            chainId: txnCalldata.chainId,
-            value: txnCalldata.value,
-            gasLimit: 800000,
-        })
-
         // CONVERT HASH TO TXN.HASH
-        addToHistory({ 'name': 'transfer', 'hash': txn.hash, 'fromChain': selectedChain0.value, 'toChain': selectedChain1.value, 'fromToken': selectedToken0.value, 'toToken': selectedToken1.value, 'value': txnCalldata.value, 'time': +new Date })
+        addToHistory({ 'name': 'transfer', 'hash': hash, 'fromChain': selectedChain0.value, 'toChain': selectedChain1.value, 'fromToken': { ...selectedToken0.value as any, amount: inputAmount.value }, 'toToken': { ...selectedToken1.value as any, amount: outputAmount.value }, 'value': txnCalldata.value, 'time': +new Date })
         // const jsonuwu = JSON.stringify({ 'name': 'transfer', 'hash': txn.hash, 'fromChain': selectedChain0, 'toChain': selectedChain1, 'fromToken': selectedToken0, 'toToken': selectedToken1, 'value': txnCalldata.value, 'time': +new Date })
         // name, hash, from, to chain and token, value, time
+
+        addTransaction(hash)
 
 
         // @ts-ignore

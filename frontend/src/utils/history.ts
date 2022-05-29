@@ -1,17 +1,18 @@
 import { ref } from "vue";
 
 /* eslint-disable camelcase */
-const history = ref([] as any[]);
 
 export function loadHistory() {
+  const history = []
   for (let i = 0; i < window.localStorage.length; i++) {
     if (window.localStorage.key(i)?.startsWith("history")) {
       const json = window.localStorage.getItem(window.localStorage.key(i)!);
       const prev_transaction = JSON.parse(json!);
       // console.log(prev_transaction.fromToken._value.name)
-      history.value.push(prev_transaction)!;
+      history.push(prev_transaction)!;
     }
   }
+  return history
 }
 
 export function addToHistory(data: {
