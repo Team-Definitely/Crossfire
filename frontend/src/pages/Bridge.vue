@@ -35,11 +35,12 @@ const routes = ref([] as any[])
 const defaultPlaceholder = "0.0"
 const placeholder = ref(defaultPlaceholder)
 
+const priority = ref('Gas' as 'Output' | 'Gas' | 'Time')
+
 const transferLoading = ref(false)
 
 const spender = ref('')
 
-const history = ref([] as any[])
 onMounted(init)
 
 function init() {
@@ -51,6 +52,12 @@ watch(selectedChain1, onSelectedChainChange)
 
 watch(selectedToken0, onTokenChange)
 watch(selectedToken1, onTokenChange)
+
+watch(inputAmount, onAmountChange)
+
+watch(priority, () => {
+    getQuote()
+})
 
 function onSelectedChainChange() {
     selectedToken0.value = null
@@ -67,6 +74,10 @@ function onTokenChange() {
     inputAmount.value = null
     outputAmount.value = null
     quoteResult.value = null
+    routes.value = []
+}
+
+function onAmountChange() {
     routes.value = []
 }
 
@@ -123,7 +134,7 @@ async function getQuote() {
             fromAmount: inputAmount.value * 10 ** (selectedToken0.value as any).decimals,
             userAddress: address.value,
             uniqueRoutesPerBridge: true,
-            sort: "time", // can provide option to user
+            sort: priority.value.toLowerCase(), // provided option to user
         } as any)
         console.log(result.result)
         if (result.result.routes?.length > 0) {
@@ -227,7 +238,17 @@ async function transfer() {
         </div>
         <div class="mt-20 w-10/12 mx-auto min-w-72 md:w-1/3 bg-dark-100 p-5 rounded-lg">
             <h1 class="font-bold text-lg">Routing</h1>
-            <p v-if="!routes || routes.length === 0" class="text-sm">No routes available yet
+            <div class="flex items-center space-x-3">
+                <p class="text-sm">
+                    Priority:
+                </p>
+                <select v-model="priority" class="mt-0.5 text-white text-xs px-2 py-1 rounded-md bg-dark-500">
+                    <option value="Gas">Gas</option>
+                    <option value="Time">Time</option>
+                    <option value="Output">Output</option>
+                </select>
+            </div>
+            <p v-if="!routes || routes.length === 0" class="text-sm mt-3">No routes available yet
             </p>
             <div v-else>
                 <div v-for="route in routes" :key="route.routeId" class="p-3 border border-gray-500 rounded-lg my-3">
