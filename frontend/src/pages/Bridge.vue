@@ -10,7 +10,7 @@ import { storeToRefs } from 'pinia';
 import { formatUnits } from '@ethersproject/units';
 import { ethers } from 'ethers';
 import ApproveButton from '~/components/ApproveButton.vue';
-
+import { addToHistory, loadHistory } from '~/utils/history'
 const { address } = storeToRefs(useWeb3Store())
 
 const selectedChain0 = ref(null as Chain | null)
@@ -36,6 +36,7 @@ const transferLoading = ref(false)
 
 const spender = ref('')
 
+const history = ref([] as any[])
 onMounted(init)
 
 function init() {
@@ -97,7 +98,7 @@ async function getSupportedTokens() {
     tokenList0.value = fromTokens.data.result
     tokenList1.value = toTokens.data.result
 
-    selectedToken0.value = fromTokens.data.result[0]
+    selectedToken0.value = fromTokens.data.result[1]
     selectedToken1.value = toTokens.data.result[0]
 }
 
@@ -142,6 +143,7 @@ async function getQuote() {
     }
 }
 
+
 async function transfer() {
     if (!quoteResult.value) return
     try {
@@ -152,6 +154,8 @@ async function transfer() {
         const web3Provider = new ethers.providers.Web3Provider(window.ethereum)
         console.log(txnCalldata)
 
+        const hash = 'randomhash'
+
         const txn = await web3Provider.getSigner().sendTransaction({
             from: address.value ?? '',
             to: txnCalldata.txTarget,
@@ -160,7 +164,10 @@ async function transfer() {
             value: txnCalldata.value,
             gasLimit: 800000,
         })
-        window.localStorage[`history_${txn.hash}`] = { 'name': 'transfer', 'hash': txn.hash, 'fromChain': selectedChain0, 'toChain': selectedChain1, 'fromToken': selectedToken0, 'toToken': selectedToken1, 'value': txnCalldata.value, 'time': +new Date }
+
+        // CONVERT HASH TO TXN.HASH
+        addToHistory({ 'name': 'transfer', 'hash': txn.hash, 'fromChain': selectedChain0.value, 'toChain': selectedChain1.value, 'fromToken': selectedToken0.value, 'toToken': selectedToken1.value, 'value': txnCalldata.value, 'time': +new Date })
+        // const jsonuwu = JSON.stringify({ 'name': 'transfer', 'hash': txn.hash, 'fromChain': selectedChain0, 'toChain': selectedChain1, 'fromToken': selectedToken0, 'toToken': selectedToken1, 'value': txnCalldata.value, 'time': +new Date })
         // name, hash, from, to chain and token, value, time
 
 
