@@ -58,6 +58,7 @@ function onSelectedChainChange() {
     inputAmount.value = null
     outputAmount.value = null
     quoteResult.value = null
+    routes.value = []
 
     getSupportedTokens()
 }
@@ -66,6 +67,7 @@ function onTokenChange() {
     inputAmount.value = null
     outputAmount.value = null
     quoteResult.value = null
+    routes.value = []
 }
 
 async function getSupportedChains() {
@@ -257,14 +259,16 @@ async function transfer() {
 
                     <div class="mt-2 flex space-x-2">
                         <div class="text-xs bg-primary-500 rounded-lg inline-flex w-auto">
-                            <span class="px-2 py-1">Gas fees</span> <span class="px-2 py-1 bg-primary-600 rounded-r-lg">${{
-                                    route.totalGasFeesInUsd.toLocaleString('en-US')
-                            }}</span>
+                            <span class="px-2 py-1">Gas fees</span> <span
+                                class="px-2 py-1 bg-primary-600 rounded-r-lg">${{
+                                        route.totalGasFeesInUsd.toLocaleString('en-US')
+                                }}</span>
                         </div>
                         <div class="text-xs bg-primary-500 rounded-lg inline-flex w-auto">
-                            <span class="px-2 py-1">Txn count</span> <span class="px-2 py-1 bg-primary-600 rounded-r-lg">{{
-                                    route.totalUserTx
-                            }}</span>
+                            <span class="px-2 py-1">Txn count</span> <span
+                                class="px-2 py-1 bg-primary-600 rounded-r-lg">{{
+                                        route.totalUserTx
+                                }}</span>
                         </div>
                     </div>
                 </div>
