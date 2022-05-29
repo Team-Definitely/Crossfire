@@ -12,6 +12,7 @@ import { ethers } from 'ethers';
 import ApproveButton from '~/components/ApproveButton.vue';
 import { addToHistory, loadHistory } from '~/utils/history'
 import { addTransaction } from '~/utils/transactions';
+import SafeImage from '~/components/SafeImage.vue';
 const { address } = storeToRefs(useWeb3Store())
 
 const selectedChain0 = ref(null as Chain | null)
@@ -29,6 +30,7 @@ const inputAmount = ref(null as number | null)
 const outputAmount = ref(null as number | null)
 
 const quoteResult = ref(null)
+const routes = ref([] as any[])
 
 const defaultPlaceholder = "0.0"
 const placeholder = ref(defaultPlaceholder)
@@ -128,6 +130,7 @@ async function getQuote() {
             outputAmount.value = +formatUnits(toAmount, (selectedToken1.value as any).decimals)
 
             quoteResult.value = { route: result.result.routes[result.result.routes.length - 1] } as any
+            routes.value = result.result.routes
 
             const txn = await postBuildTx(quoteResult.value)
             spender.value = txn.data.result.approvalData.allowanceTarget
@@ -188,34 +191,84 @@ async function transfer() {
 </script>
 
 <template>
-    <div class="mt-20 w-10/12 mx-auto min-w-72 md:(min-w-96 w-45) bg-dark-100 p-5 rounded-lg">
-        <h1 class="font-bold text-xl">Bridge</h1>
-        <h3 class="text-sm text-gray-300">Transfer tokens between varying chains</h3>
+    <div class="md:(flex)">
+        <!-- <div class="mt-20 w-10/12 mx-auto min-w-72 md:(min-w-96 w-45) bg-dark-100 p-5 rounded-lg"> -->
+        <div class="mt-20 w-10/12 mx-auto min-w-72 md:w-1/3 bg-dark-100 p-5 rounded-lg h-full">
+            <h1 class="font-bold text-xl">Bridge</h1>
+            <h3 class="text-sm text-gray-300">Transfer tokens between varying chains</h3>
 
-        <div class="flex flex-col md:flex-row md:items-center justify-between mt-3">
-            <Dropdown v-model="selectedChain0" :list="chainList0">
-                From Chain
-            </Dropdown>
-            <span class="hidden md:block">&rarr;</span>
-            <span class="block md:hidden my-2 mx-auto">&darr;</span>
-            <Dropdown v-model="selectedChain1" :list="chainList1">
-                To Chain
-            </Dropdown>
+            <div class="flex flex-col md:flex-row md:items-center space-x-3 mt-3">
+                <Dropdown v-model="selectedChain0" :list="chainList0">
+                    From Chain
+                </Dropdown>
+                <span class="hidden md:block">&rarr;</span>
+                <span class="block md:hidden my-2 mx-auto">&darr;</span>
+                <Dropdown v-model="selectedChain1" :list="chainList1">
+                    To Chain
+                </Dropdown>
 
+            </div>
+            <div class="mt-5">
+                <InputField label="From token" v-model="selectedToken0" v-model:inputValue="inputAmount"
+                    placeholder="0.0" :list="tokenList0" v-debounce:500ms="getQuote" />
+                <div class="my-1.5 w-full text-center">&darr;</div>
+                <InputField label="To token" v-model="selectedToken1" v-model:inputValue="outputAmount"
+                    :placeholder="placeholder" :list="tokenList1" disabled="true" />
+            </div>
+
+            <div class="mt-5">
+                <ApproveButton v-if="selectedToken0 && quoteResult" :token="selectedToken0" :spender="spender" />
+                <button @click="transfer"
+                    class="w-full mt-2 bg-primary-500 hover:bg-primary-600 transition rounded-lg p-3 font-bold"
+                    :disabled="transferLoading">Transfer</button>
+            </div>
         </div>
-        <div class="mt-5">
-            <InputField label="From token" v-model="selectedToken0" v-model:inputValue="inputAmount" placeholder="0.0"
-                :list="tokenList0" v-debounce:500ms="getQuote" />
-            <div class="my-1.5 w-full text-center">&darr;</div>
-            <InputField label="To token" v-model="selectedToken1" v-model:inputValue="outputAmount"
-                :placeholder="placeholder" :list="tokenList1" disabled="true" />
-        </div>
+        <div class="mt-20 w-10/12 mx-auto min-w-72 md:w-1/3 bg-dark-100 p-5 rounded-lg">
+            <h1 class="font-bold text-lg">Routing</h1>
+            <p v-if="!routes || routes.length === 0" class="text-sm">No routes available yet
+            </p>
+            <div v-else>
+                <div v-for="route in routes" :key="route.routeId" class="p-3 border border-gray-500 rounded-lg my-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="flex items-center space-x-2">
+                            <SafeImage :src="(selectedToken0 as any).icon" class="w-5 h-5 rounded-full"
+                                :alt="(selectedToken0 as any).symbol" />
+                            <div>{{ (route.fromAmount * 10 ** -((selectedToken0 as
+                                    any).decimals)).toLocaleString('en-US')
+                            }}</div>
+                        </div>
+                        <div>
+                            &rarr;
+                        </div>
+                        <div v-for="bridge in route.usedBridgeNames">
+                            <h1>{{ bridge }} </h1>
+                        </div>
+                        <div>
+                            &rarr;
+                        </div>
+                        <div class="flex items-center space-x-2 my-1">
+                            <SafeImage :src="(selectedToken1 as any).icon" class="w-5 h-5 rounded-full"
+                                :alt="(selectedToken1 as any).symbol" />
+                            <div>{{ (route.toAmount * 10 ** -((selectedToken1 as
+                                    any).decimals)).toLocaleString('en-US')
+                            }}</div>
+                        </div>
+                    </div>
 
-        <div class="mt-5">
-            <ApproveButton v-if="selectedToken0 && quoteResult" :token="selectedToken0" :spender="spender" />
-            <button @click="transfer"
-                class="w-full mt-2 bg-primary-500 hover:bg-primary-600 transition rounded-lg p-3 font-bold"
-                :disabled="transferLoading">Transfer</button>
+                    <div class="mt-2 flex space-x-2">
+                        <div class="text-xs bg-primary-500 rounded-lg inline-flex w-auto">
+                            <span class="px-2 py-1">Gas fees</span> <span class="px-2 py-1 bg-primary-600 rounded-r-lg">${{
+                                    route.totalGasFeesInUsd.toLocaleString('en-US')
+                            }}</span>
+                        </div>
+                        <div class="text-xs bg-primary-500 rounded-lg inline-flex w-auto">
+                            <span class="px-2 py-1">Txn count</span> <span class="px-2 py-1 bg-primary-600 rounded-r-lg">{{
+                                    route.totalUserTx
+                            }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>

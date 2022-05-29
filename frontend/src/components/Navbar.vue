@@ -73,7 +73,7 @@ function closeModal() {
     <Modal v-model="open" :close="closeModal">
         <div class="bg-true-gray-700 text-white rounded-lg w-5/12">
             <header class="p-5 bg-dark-500 rounded-t-lg flex items-center justify-between" v-if="address">
-                <div class="flex items-center space-x-3">
+                <div class="md:(flex items-center space-x-3)">
                     <Jazzicon :address="address" diameter="40" />
                     <h1 :title="address" class="font-bold mb-1"> {{
                             address.substring(0, 10) +
@@ -86,10 +86,11 @@ function closeModal() {
                     Connected
                 </div>
             </header>
-            <div class="p-5">
+            <div class="p-5 overflow-y-auto max-h-96">
                 <h1 class="font-semibold">Past transactions</h1>
                 <div class="mt-1">
-                    <div v-for="item in history" :key="item.hash" class=" border border-gray-500 rounded-lg p-5 my-3">
+                    <div v-for="item in history.concat(history)" :key="item.hash"
+                        class=" border border-gray-500 rounded-lg p-5 my-3">
                         <div class="flex items-center justify-between">
                             <div>
                                 <div class="flex items-center space-x-3">
