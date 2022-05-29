@@ -131,7 +131,7 @@ function select(item: any) {
                 </div>
 
             </div>
-            <ul class="list-none max-h-64 overflow-y-auto">
+            <ul class="list-none max-h-64 overflow-y-auto pt-1">
                 <li v-for="item in filteredItems.length == 0 ? items : filteredItems" @click="select(item)"
                     class="flex space-x-2 items-center px-4 py-3 cursor-pointer hover:(bg-true-gray-600) rounded-lg">
                     <SafeImage :src="item.icon ?? getIconUrl(item.name, props.type)" :alt="item.name"

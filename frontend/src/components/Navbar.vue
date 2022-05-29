@@ -36,12 +36,28 @@ async function connectWallet() {
 </script>
 
 <template>
-    <nav class="flex justify-between items-center p-5 bg-dark-300 m-2 rounded-lg">
-        <h1 class="text-3xl">Crossfire</h1>
-        <ul class="list-none flex space-x-2 items-center">
-            <li class="z-0">
-                <ConnectWalletButton @click="connectWallet" :address="address ?? ''" :dark="true" />
-            </li>
-        </ul>
+    <nav class="bg-dark-300 m-2 rounded-lg">
+        <div class="flex justify-between items-center p-5">
+            <div class="py-2">
+                <h1 class="logo">Crossfire</h1>
+                <h3 class="px-3 text-gray-300">by Team Definitely</h3>
+            </div>
+            <ul class="list-none flex space-x-2 items-center">
+                <li class="z-0">
+                    <ConnectWalletButton @click="connectWallet" :address="address ?? ''" :dark="true" />
+                </li>
+            </ul>
+        </div>
+        <div class="h-6 bg-gradient-to-r from-primary-500 to-primary-600 rounded-b-lg">
+        </div>
     </nav>
 </template>
+
+<style scoped>
+.logo {
+    @apply bg-gradient-to-r from-primary-500 to-primary-600 px-3 py-1 tracking-widest font-black text-4xl;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+</style>
