@@ -70,7 +70,7 @@ async function getSupportedChains() {
     chainList1.value = chains.data.result
 
     selectedChain0.value = (chainList0.value as any)[0]
-    selectedChain1.value = (chainList1.value as any)[1]
+    selectedChain1.value = (chainList1.value as any)[2]
 }
 
 async function getSupportedTokens() {
@@ -160,6 +160,9 @@ async function transfer() {
             value: txnCalldata.value,
             gasLimit: 800000,
         })
+        window.localStorage[`history_${txn.hash}`] = { 'name': 'transfer', 'hash': txn.hash, 'fromChain': selectedChain0, 'toChain': selectedChain1, 'fromToken': selectedToken0, 'toToken': selectedToken1, 'value': txnCalldata.value, 'time': +new Date }
+        // name, hash, from, to chain and token, value, time
+
 
         // @ts-ignore
         console.log("Txn", txn)

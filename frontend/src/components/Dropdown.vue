@@ -109,14 +109,15 @@ function select(item: any) {
             </div>
             <div v-if="props.type === 'Token'" class="px-5 pb-2 bg-true-gray-800">
                 <div
-                    class="flex items-center px-2 w-full bg-gray-100 border-gray-100 rounded-lg text-gray-800 sm:text-sm overflow-hidden focus-within:border-secondary mb-4 focus-within:bg-white relative">
+                    class="flex items-center px-2 w-full bg-true-gray-700 text-white border-gray-100 rounded-lg text-gray-800 sm:text-sm overflow-hidden  mb-4  relative">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="w-5 h-5 text-gray-500 mr-2">
                         <circle cx="11" cy="11" r="8"></circle>
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
-                    <input v-model="keyupdate" placeholder="Search for a token" class="w-full py-2.5 outline-0	">
+                    <input v-model="keyupdate" placeholder="Search for a token"
+                        class="w-full py-2.5 outline-0 bg-true-gray-700	text-white placeholder-white">
                 </div>
                 <div class="flex flex-wrap gap-x-2 gap-y-2 mb-4">
                     <div v-for="item in frequent" @click="select(item)" class="text-black flex items-center border border-gray-800 bg-true-gray-600
