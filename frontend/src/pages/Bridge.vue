@@ -165,7 +165,7 @@ async function transfer() {
 
 
         // @ts-ignore
-        console.log("Txn hash", txn)
+        console.log("Txn", txn)
     }
     catch (e) {
         console.error(e);

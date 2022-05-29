@@ -104,7 +104,7 @@ function select(item: any) {
     </button>
     <Modal v-model="open" :close="closeModal">
         <div class="bg-true-gray-700 text-white rounded-lg w-96">
-            <div class="p-5 bg-true-gray-800 rounded-t-lg">
+            <div class="p-5 bg-true-gray-800 rounded-t-lg font-bold">
                 Select a {{ props.type }}
             </div>
             <div v-if="props.type === 'Token'" class="px-5 pb-2 bg-true-gray-800">
@@ -121,11 +121,11 @@ function select(item: any) {
                 </div>
                 <div class="flex flex-wrap gap-x-2 gap-y-2 mb-4">
                     <div v-for="item in frequent" @click="select(item)" class="text-black flex items-center border border-gray-800 bg-true-gray-600
-                        cursor-pointer hover:bg-true-gray-400 rounded-full py-1 pl-1 pr-2 sm:py-2 sm:pl-2 sm:pr-4 text-xs
+                        cursor-pointer hover:bg-true-gray-500 transition rounded-full text-xs
                         font-medium">
                         <SafeImage :src="item.icon ?? getIconUrl(item.name, props.type)" :alt="item.name"
                             class="w-6 h-6 rounded-full mr-1 sm:mr-2 bg-gray-200 border border-gray-300 " />
-                        <div class="text-white">{{ item.symbol }}</div>
+                        <p class="text-white pr-2.5 py-1.5">{{ item.symbol }}</p>
 
                     </div>
 
