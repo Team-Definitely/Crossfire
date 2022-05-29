@@ -152,7 +152,7 @@ async function transfer() {
         const web3Provider = new ethers.providers.Web3Provider(window.ethereum)
         console.log(txnCalldata)
 
-        const txn = await web3Provider.call({
+        const txn = await web3Provider.getSigner().sendTransaction({
             from: address.value ?? '',
             to: txnCalldata.txTarget,
             data: txnCalldata.txData,
@@ -161,8 +161,10 @@ async function transfer() {
             gasLimit: 800000,
         })
 
+
+
         // @ts-ignore
-        console.log("Txn hash", txn.hash)
+        console.log("Txn hash", txn)
     }
     catch (e) {
         console.error(e);
