@@ -10,6 +10,7 @@ import Chevron from './Icons/Chevron.vue';
 
 const open = ref(false)
 const items = ref([] as any[])
+const frequent = ref([] as any[])
 
 const props = defineProps({
     type: {
@@ -41,17 +42,24 @@ function closeModal() {
 }
 
 function updateList() {
+    console.log(items.value)
     if (props.type === 'Chain') items.value = props.list as any[] ?? chains
     else if (props.type === 'Token') {
         items.value = props.list as any[] ?? tokens
     }
+
+    frequent.value = items.value.filter(function (item) {
+        return ["DAI", "MATIC", "ETH", "USDT", "USDC"].includes(item.symbol);
+    });
 }
 
 function init() {
     updateList()
 }
 
+
 function select(item: any) {
+    console.log(item);
     selected.value = item
     closeModal()
 }
@@ -87,40 +95,19 @@ function select(item: any) {
                         <circle cx="11" cy="11" r="8"></circle>
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
-                    <input placeholder="Search Name or Address" class="w-full border-none py-2.5 bg-transparent"
+                    <input placeholder="Search Name or Address" class="w-full py-2.5"
                         role="search" spellcheck="false" value="">
                 </div>
                 <div class="flex flex-wrap gap-x-2 gap-y-2 mb-4">
-                    <div
-                        class="text-black flex items-center border border-gray-200 bg-gray-50 cursor-pointer hover:bg-gray-100 rounded-full py-1 pl-1 pr-2 sm:py-2 sm:pl-2 sm:pr-4 text-xs font-medium">
-                        <img class="w-6 h-6 rounded-full mr-1 sm:mr-2 bg-gray-200 border border-gray-300"
-                            src="https://maticnetwork.github.io/polygon-token-assets/assets/dai.svg">DAI
+                    <div v-for="item in frequent" @click="select(item)" class="text-black flex items-center border border-gray-800 bg-true-gray-600
+                        cursor-pointer hover:bg-true-gray-400 rounded-full py-1 pl-1 pr-2 sm:py-2 sm:pl-2 sm:pr-4 text-xs
+                        font-medium">
+                        <SafeImage :src="item.icon ?? getIconUrl(item.name, props.type)" :alt="item.name"
+                            class="w-6 h-6 rounded-full mr-1 sm:mr-2 bg-gray-200 border border-gray-300 " />
+                        <div class="text-white">{{ item.symbol }}</div>
+
                     </div>
-                    <div
-                        class="text-black flex items-center border border-gray-200 bg-gray-50 cursor-pointer hover:bg-gray-100 rounded-full py-1 pl-1 pr-2 sm:py-2 sm:pl-2 sm:pr-4 text-xs font-medium">
-                        <img class="w-6 h-6 rounded-full mr-1 sm:mr-2 bg-gray-200 border border-gray-300"
-                            src="https://maticnetwork.github.io/polygon-token-assets/assets/matic.svg">MATIC
-                    </div>
-                    <div
-                        class="text-black flex items-center border border-gray-200 bg-gray-50 cursor-pointer hover:bg-gray-100 rounded-full py-1 pl-1 pr-2 sm:py-2 sm:pl-2 sm:pr-4 text-xs font-medium">
-                        <img class="w-6 h-6 rounded-full mr-1 sm:mr-2 bg-gray-200 border border-gray-300"
-                            src="https://maticnetwork.github.io/polygon-token-assets/assets/usdc.svg">USDC
-                    </div>
-                    <div
-                        class="text-black flex items-center border border-gray-200 bg-gray-50 cursor-pointer hover:bg-gray-100 rounded-full py-1 pl-1 pr-2 sm:py-2 sm:pl-2 sm:pr-4 text-xs font-medium">
-                        <img class="w-6 h-6 rounded-full mr-1 sm:mr-2 bg-gray-200 border border-gray-300"
-                            src="https://maticnetwork.github.io/polygon-token-assets/assets/usdt.svg">USDT
-                    </div>
-                    <div
-                        class="text-black flex items-center border border-gray-200 bg-gray-50 cursor-pointer hover:bg-gray-100 rounded-full py-1 pl-1 pr-2 sm:py-2 sm:pl-2 sm:pr-4 text-xs font-medium">
-                        <img class="w-6 h-6 rounded-full mr-1 sm:mr-2 bg-gray-200 border border-gray-300"
-                            src="https://maticnetwork.github.io/polygon-token-assets/assets/wbtc.svg">WBTC
-                    </div>
-                    <div
-                        class="text-black flex items-center border border-gray-200 bg-gray-50 cursor-pointer hover:bg-gray-100 rounded-full py-1 pl-1 pr-2 sm:py-2 sm:pl-2 sm:pr-4 text-xs font-medium">
-                        <img class="w-6 h-6 rounded-full mr-1 sm:mr-2 bg-gray-200 border border-gray-300"
-                            src="https://maticnetwork.github.io/polygon-token-assets/assets/weth.svg">WETH
-                    </div>
+
                 </div>
                 <div class="flex justify-between items-center sticky top-0 text-xs font-medium text-gray-500 px-1">
                     <span>Token name</span><span>Balance</span>

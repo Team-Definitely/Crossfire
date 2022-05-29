@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
-import axios from './axios'
-import qs from 'qs'
-
+import axios from "./axios";
+import qs from "qs";
 
 export function generateParams(name, array) {
   let result = "";
