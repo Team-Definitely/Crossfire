@@ -273,10 +273,10 @@ async function transfer() {
                 }}</span>
                 </div>
                 <div class="text-sm flex flex-row justify-between text-gray-200 my-2"><span>Bridge
-                        Fee</span><span>${{ protocolFees?.toLocaleString('en-US') }}
+                        Fee</span><span>${{ (protocolFees as any)?.toLocaleString('en-US') }}
                     </span></div>
                 <div class="text-sm flex flex-row justify-between text-gray-200 my-2"><span>Gas Fee</span><span>${{
-                        gasFees?.toLocaleString('en-US')
+                        (gasFees as any)?.toLocaleString('en-US')
                 }}
                     </span></div>
             </div>

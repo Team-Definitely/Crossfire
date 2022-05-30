@@ -2,7 +2,7 @@
 import axios from "./axios";
 import qs from "qs";
 
-export function generateParams(name, array) {
+export function generateParams(name: any, array: any[]) {
   let result = "";
   if (array != null && array.length > 0) {
     for (let idx = 0; idx < array.length; idx++) {
@@ -14,7 +14,7 @@ export function generateParams(name, array) {
 }
 // SERVER
 
-export async function gasPrice(chainId) {
+export async function gasPrice(chainId: number) {
   const gasPrice = await axios.get(`/gas-price?chainId=${chainId}`);
   console.log(gasPrice.data);
   return gasPrice.data;
@@ -70,17 +70,17 @@ export async function getBuildTx(
   }
 }
 
-export async function postBuildTx(data) {
+export async function postBuildTx(data: any) {
   return await axios.post('/build-tx', data);
 }
 // BALANCES
 
-export async function getbalances(userAddress) {
+export async function getbalances(userAddress: string) {
   const balances = await axios.get(`/balances?userAddress=${userAddress}`);
   console.log(balances.data);
   return balances.data;
 }
-export async function debank(userAddress) {
+export async function debank(userAddress: string) {
   const balances = await axios.get(
     `/balances/debank?userAddress=${userAddress}`
   );
@@ -88,7 +88,7 @@ export async function debank(userAddress) {
   return balances.data;
 }
 
-export async function getTokenBalance(tokenAddress, chainId, userAddress) {
+export async function getTokenBalance(tokenAddress: string, chainId: number, userAddress: string) {
   const tokenBalance = await axios.get(
     `/balances/token-balance?tokenAddress=${tokenAddress}&chainId=${chainId}&userAddress=${userAddress}`
   );

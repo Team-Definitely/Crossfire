@@ -36,7 +36,7 @@ async function checkAllowance() {
         const userAddress = await web3Provider.getSigner().getAddress()
 
 
-        const contract = new ethers.Contract(props.token.address, ERC20ABI, web3Provider)
+        const contract = new ethers.Contract((props.token as any).address, ERC20ABI, web3Provider)
         const allowance = await contract.allowance(userAddress, props.spender)
         console.log("allowance for ", props.token, props.spender, formatEther(allowance))
         if (+formatEther(allowance) > 0) {
@@ -60,7 +60,7 @@ async function approve() {
 
         const web3Provider = new ethers.providers.Web3Provider(window.ethereum)
 
-        const contract = new ethers.Contract(props.token.address, ERC20ABI, web3Provider.getSigner())
+        const contract = new ethers.Contract((props.token as any).address, ERC20ABI, web3Provider.getSigner())
         const result = await contract.approve(props.spender, ethers.constants.MaxUint256)
 
         console.log("Approve hash", result.hash)
@@ -82,7 +82,7 @@ async function approve() {
     <button @click="approve" v-if="!hasAllowance"
         class="w-full text-xs bg-primary-700 hover:bg-primary-800 transition rounded-lg p-3 font-bold"
         :disabled="loading || loadingAllowance">
-        <span v-if="!hasAllowance">Approve {{ token.symbol }}</span>
+        <span v-if="!hasAllowance">Approve {{ (token as any).symbol }}</span>
         <span v-else-if="loadingAllowance">Checking allowance...</span>
         <span v-else-if="loading">Loading...</span>
     </button>
