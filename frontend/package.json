@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/qs": "^6.9.7",
     "@vueuse/core": "^8.5.0",
     "axios": "^0.27.2",
     "ethers": "^5.6.8",
