@@ -58,7 +58,13 @@ function closeModal() {
         <div class="flex justify-between items-center px-5 py-2">
             <div class="py-2">
                 <h1 class="logo">Crossfire</h1>
-                <h3 class="px-3 text-gray-300">by Team Definitely</h3>
+                <h3 class="px-3 text-gray-300"> <a href="https://github.com/Team-Definitely" target="_blank"
+                        rel="noopener noreferrer"> by Team Definitely, </a>
+                    <a class="text-yellow-400" href="https://devfolio.co/projects/crossfire-477e" target="_blank"
+                        rel="noopener noreferrer"> winners at WarpSpeed
+                        (CoinDCX
+                        track), </a>
+                </h3>
             </div>
             <ul class="list-none flex space-x-2 items-center">
                 <li class="z-0">
@@ -89,8 +95,7 @@ function closeModal() {
             <div class="p-5 overflow-y-auto max-h-96">
                 <h1 class="font-semibold">Past transactions</h1>
                 <div class="mt-1">
-                    <div v-for="item in history" :key="item.hash"
-                        class=" border border-gray-500 rounded-lg p-5 my-3">
+                    <div v-for="item in history" :key="item.hash" class=" border border-gray-500 rounded-lg p-5 my-3">
                         <div class="flex items-center justify-between">
                             <div>
                                 <div class="flex items-center space-x-3">
