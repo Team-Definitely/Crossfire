@@ -61,7 +61,7 @@ function closeModal() {
                 <h3 class="px-3 text-gray-300"> <a href="https://github.com/Team-Definitely" target="_blank"
                         rel="noopener noreferrer"> by Team Definitely, </a>
                     <a class="text-yellow-400" href="https://devfolio.co/projects/crossfire-477e" target="_blank"
-                        rel="noopener noreferrer"> winners at WarpSpeed
+                        rel="noopener noreferrer"> winners at Warpspeed
                         (CoinDCX
                         track), </a>
                 </h3>
