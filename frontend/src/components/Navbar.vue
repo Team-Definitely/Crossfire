@@ -59,12 +59,12 @@ function closeModal() {
             <div class="py-2">
                 <h1 class="logo">Crossfire</h1>
                 <h3 class="px-3 text-gray-300"> <a href="https://github.com/Team-Definitely" target="_blank"
-                        rel="noopener noreferrer"> by Team Definitely, </a>
-                    <a class="text-yellow-400" href="https://devfolio.co/projects/crossfire-477e" target="_blank"
-                        rel="noopener noreferrer"> winners at Warpspeed
-                        (CoinDCX
-                        track), </a>
+                        rel="noopener noreferrer"> by Team Definitely</a>
                 </h3>
+
+                <p class="px-3 py-1 text-yellow-400" rel="noopener noreferrer"> Winners of the CoinDCX track bounty at
+                    <a href="https://devfolio.co/projects/crossfire-477e" target="_blank" class="underline">Warpspeed!</a>
+                </p>
             </div>
             <ul class="list-none flex space-x-2 items-center">
                 <li class="z-0">

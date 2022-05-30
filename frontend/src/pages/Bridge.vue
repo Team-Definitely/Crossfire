@@ -13,6 +13,7 @@ import ApproveButton from '~/components/ApproveButton.vue';
 import { addToHistory, loadHistory } from '~/utils/history'
 import { addTransaction } from '~/utils/transactions';
 import SafeImage from '~/components/SafeImage.vue';
+
 const { address } = storeToRefs(useWeb3Store())
 
 const selectedChain0 = ref(null as Chain | null)
@@ -45,7 +46,6 @@ const bridgeUsed = ref([] as any[])
 const protocolFees = ref(null)
 const gasFees = ref(null)
 
-const history = ref([] as any[])
 onMounted(init)
 
 function init() {
@@ -238,7 +238,9 @@ async function transfer() {
         <div class="mt-20 w-10/12 mx-auto min-w-72 md:w-1/3 bg-dark-100 rounded-lg h-full">
             <div class="p-5">
                 <h1 class="font-bold text-xl">Bridge</h1>
-                <h3 class="text-sm text-gray-300">Transfer tokens between varying chains</h3>
+                <h3 class="text-sm text-gray-300">Transfer tokens between varying chains. <br />
+                    <span v-if="!address || address.length === 0" class="text-sm text-gray-300">Connect your wallet to begin!</span>
+                </h3>
 
                 <div class="flex flex-col md:flex-row md:items-center space-x-3 mt-3">
                     <Dropdown v-model="selectedChain0" :list="chainList0">
